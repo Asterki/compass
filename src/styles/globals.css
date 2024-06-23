@@ -2,3 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+::selection {
+  background-color: #2563EB;
+  color: #fff;
+}
+
+::-moz-selection {
+  background-color: #2563EB;
+  color: #fff;
+}
+
+::-webkit-selection {
+  background-color: #2563EB;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #676a70;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #48494b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #7c8086;
+}

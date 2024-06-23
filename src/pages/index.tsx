@@ -10,7 +10,7 @@ export default function Home() {
 
     return (
         <main
-            className={`flex min-h-screen flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700`}
+            className={`flex min-h-screen flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <section className="flex min-h-screen w-full flex-col items-center justify-between">
                 <header className="flex w-full items-center justify-between p-4 px-2 md:px-24">
@@ -40,16 +40,16 @@ export default function Home() {
                     </div>
                     <div className="hidden w-4/12 items-center justify-center gap-6 md:flex">
                         <button
-                            className="w-1/2 rounded-md border-2 border-slate-200 p-2 font-bold shadow-md transition-all hover:scale-105"
-                            onClick={() => router.push("/login")}
+                            className="w-1/2 rounded-md border-2 border-slate-200 p-2 font-bold shadow-md transition-all hover:scale-105 dark:hover:bg-slate-300 dark:hover:text-slate-700"
+                            onClick={() => router.push("/auth/signin")}
                         >
-                            Login
+                            Sign In
                         </button>
                         <button
                             className="w-1/2 rounded-md bg-gradient-to-br from-purple-400 to-purple-500 p-2 font-bold text-white shadow-md transition-all hover:scale-105"
-                            onClick={() => router.push("/login")}
+                            onClick={() => router.push("/auth/signup")}
                         >
-                            Register
+                            Sign Up
                         </button>
                     </div>
                 </header>
@@ -74,22 +74,26 @@ export default function Home() {
                         </p>
 
                         <div className="flex justify-center gap-4 md:justify-start">
-                            <button className="mt-2 rounded-md bg-gradient-to-br from-purple-400 to-purple-500 px-4 py-2 font-semibold text-white shadow-md transition-all hover:scale-105">
+                            <button
+                                className="mt-2 rounded-md bg-gradient-to-br from-purple-400 to-purple-500 px-4 py-2 font-semibold text-white shadow-md transition-all hover:scale-105"
+                                onClick={() => router.push("/auth/signup")}
+                            >
                                 Register Now
                             </button>
-                            <button className="mt-2 rounded-md border-2 border-slate-200 px-4 py-2 font-semibold shadow-md transition-all hover:scale-105">
+                            <button
+                                className="mt-2 rounded-md border-2 border-slate-200 px-4 py-2 font-semibold shadow-md transition-all hover:scale-105 dark:hover:bg-slate-300 dark:hover:text-slate-700"
+                                onClick={() => router.push("/features")}
+                            >
                                 See Features
                             </button>
                         </div>
                     </div>
                     <div className="flex w-1/2 items-center justify-center text-center">
-                        <img src="https://placehold.co/500" alt="Example for now" />
+                        <img width={400} height={400} src="https://placehold.co/500" alt="Example for now" />
                     </div>
                 </section>
 
-                <footer className="flex w-full items-center justify-center bg-gradient-to-br from-purple-500 from-60% to-pink-300 p-8">
-                    <button className="rounded-md bg-white p-2 shadow-md">Register</button>
-                    <button className="rounded-md bg-white p-2 shadow-md">Login</button>
+                <footer className="flex w-full items-center justify-center bg-gradient-to-br p-8">
                 </footer>
             </section>
         </main>
