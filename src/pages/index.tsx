@@ -55,8 +55,8 @@ export default function Home() {
                     </div>
                 </header>
 
-                <section className="p-32 flex items-center justify-around gap-12 w-full">
-                    <div className="px-20 w-1/2 text-left">
+                <section className="md:p-32 p-2 flex md:flex-row flex-col-reverse items-center justify-around gap-12 w-full">
+                    <div className="md:px-20 px-4 md:w-1/2 w-full text-center">
                         <h1 className="text-4xl font-bold">
                             Manage your life in a single, centralized,
                             easy-to-use platform Made for students, by students.
@@ -78,7 +78,7 @@ export default function Home() {
                             ut aperiam sint maiores ipsum pariatur sed facere?
                         </p>
 
-                        <div className="flex gap-4">
+                        <div className="flex md:justify-start justify-center gap-4">
                             <button className="bg-gradient-to-br from-purple-400 to-purple-500 text-white font-semibold py-2 px-4 rounded-md mt-2 shadow-md transition-all hover:scale-105">
                                 Register Now
                             </button>
