@@ -10,8 +10,7 @@ const config: Config = {
         extend: {
             backgroundImage: {
                 "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-                "gradient-conic":
-                    "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+                "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
             },
             colors: {
                 primary: "#726eff",
@@ -20,6 +19,12 @@ const config: Config = {
                 aqua2: "#08C6AB",
                 dark1: "#37465B",
                 dark2: "#212B38",
+            },
+            keyframes: {
+                slideUpAndFade: {
+                    from: { opacity: "0", transform: "translateY(2px)" },
+                    to: { opacity: "1", transform: "translateY(0)" },
+                },
             },
         },
     },
