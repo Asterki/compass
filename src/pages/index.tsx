@@ -17,12 +17,12 @@ export default function Home() {
 
 
     return (
-        <main
+        <div
             className={`flex min-h-screen w-full flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <NavbarComponent session={session} />
 
-            <section className="flex w-full flex-col-reverse items-center justify-around gap-12 p-2 lg:flex-row lg:p-32 h-full">
+            <main className="flex w-full flex-col-reverse items-center justify-around gap-12 p-2 lg:flex-row lg:p-32 h-full">
                 <div className="w-full px-4 text-center lg:w-1/2 lg:px-20 lg:text-left">
                     <h1 className="text-4xl font-bold">
                         Manage your life in a single, centralized, easy-to-use platform Made for students, by students.
@@ -57,7 +57,7 @@ export default function Home() {
                 <div className="flex w-1/2 items-center justify-center text-center">
                     <img width={400} height={400} src="https://placehold.co/500" alt="Example for now" />
                 </div>
-            </section>
+            </main>
 
             <footer className="w-full mb-2 text-center">
                 <p className="text-sm">
@@ -72,6 +72,6 @@ export default function Home() {
                     .
                 </p>
             </footer>
-        </main>
+        </div>
     );
 }
