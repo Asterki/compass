@@ -47,7 +47,7 @@ export const authOptions: AuthOptions = {
         }),
     ],
     pages: {
-        signIn: "/auth/signin",
+        signIn: "/auth/access",
         signOut: "/auth/signout",
         // TODO: Create these pages
         // error: "/auth/error", // Error code passed in query string as ?error=
