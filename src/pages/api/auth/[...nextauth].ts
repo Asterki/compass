@@ -11,6 +11,7 @@ import { prismaClient } from "@/lib/prisma";
 
 export const authOptions: AuthOptions = {
     secret: process.env.SESSION_SECRET as string,
+    // @ts-expect-error
     adapter: PrismaAdapter(prismaClient),
     callbacks: {
         session(data) {
