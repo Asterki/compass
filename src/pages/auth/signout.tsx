@@ -1,76 +1,95 @@
-import { useRouter } from "next/router";
-import { useSession, signOut } from "next-auth/react";
-import { useTranslation } from "react-i18next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-import Navbar from "@/components/navbar";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
-import { GetStaticProps, InferGetStaticPropsType } from "next";
+import { Inter } from "next/font/google";
+const inter = Inter({ subsets: ["latin"] });
 
-interface Props {}
+import { useSession, signOut } from "next-auth/react";
 
-const SignOut = (_props: InferGetStaticPropsType<typeof getStaticProps>) => {
+const MainPage = () => {
     const router = useRouter();
-    const { t } = useTranslation(["auth/signout", "components/navbar"]);
-    const { data: session, status: loggedInStatus } = useSession({
+    const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push(`/${router.locale}/auth/signin`);
+            router.push("/auth/access");
         },
     });
 
     return (
-        <div className="text-white bg-dark1">
-            <Navbar t={t} session={session} />
-
+        <main
+            className={`flex min-h-screen w-full flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
+        >
             <Head>
-                <title>{t("pageTitle")}</title>
+                <title>Sign Out | Class Compass</title>
+                <meta name="description" content="Sign out of your account on Class Compass" />
             </Head>
 
-            {loggedInStatus == "loading" && (
-                <main className="absolute w-full min-h-screen text-white bg-dark1">
-                    <p className="text-2xl text-center text-primary font-bold transition-all duration-500 transform hover:scale-105">
-                        Loading...
-                    </p>
-                </main>
-            )}
+            {status == "loading" && "Loading..."}
 
-            {loggedInStatus == "authenticated" && (
-                <main className="min-h-screen flex flex-col justify-center items-center p-12">
-                    <section className="md:w-4/12 w-full">
-                        <div className="my-4 text-gray-100 text-center">
-                            <h1 className="text-3xl">{t("title")}</h1>
-                            <p>{t("desc")}</p>
+            {status == "authenticated" && session.user !== undefined && (
+                <section className="flex w-full flex-col items-center justify-between">
+                    <header className="flex w-full items-center justify-between p-4 px-2 lg:px-24">
+                        <div className="flex w-full items-center justify-between gap-2 lg:w-auto lg:justify-start lg:gap-10">
+                            <div>
+                                <h1 className="text-lg font-bold lg:text-2xl">Class Compass</h1>
+                            </div>
+                            <div>
+                                <ul className="flex justify-end gap-2 lg:gap-4">
+                                    <li className="transition-all hover:scale-105">
+                                        <a href="#" className="font-semibold text-purple-500 hover:underline">
+                                            Home
+                                        </a>
+                                    </li>
+                                    <li className="transition-all hover:scale-105">
+                                        <a href="#" className="font-semibold text-purple-500 hover:underline">
+                                            About
+                                        </a>
+                                    </li>
+                                    <li className="transition-all hover:scale-105">
+                                        <a href="#" className="font-semibold text-purple-500 hover:underline">
+                                            Contact
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
+                        <div className="hidden w-4/12 items-center justify-center gap-6 lg:flex">
+                            <button
+                                className="w-1/2 rounded-md border-2 border-slate-200 p-2 font-bold shadow-md transition-all hover:scale-105 dark:hover:bg-slate-300 dark:hover:text-slate-700"
+                                onClick={() => router.push("/auth/access")}
+                            >
+                                Sign In
+                            </button>
+                            <button
+                                className="w-1/2 rounded-md bg-gradient-to-br from-purple-400 to-purple-500 p-2 font-bold text-white shadow-md transition-all hover:scale-105"
+                                onClick={() => router.push("/auth/access")}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+                    </header>
 
+                    <section className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <h2 className="text-center text-3xl font-bold">Hello, {session.user.name}!</h2>
+                        <p className="text-center text-lg">Are you sure you want to sign out of your account?</p>
+                        <p className="text-center text-lg">You will need to log in again to access ClassCompass</p>
                         <button
-                            className="bg-white/20 hover:bg-red1 w-full shadow-md rounded-md p-4 transition-all"
-                            onClick={() => signOut({ redirect: true, callbackUrl: "/" })}
+                            className="mt-2 w-full rounded-md bg-gradient-to-br from-red-400 to-red-500 p-2 font-bold text-white shadow-md transition-all hover:scale-105"
+                            onClick={() => signOut()}
                         >
-                            {t("buttons.signout")}
+                            Sign Out
                         </button>
-
-                        <br />
-                        <br />
-
                         <button
-                            className="bg-white/20 hover:bg-primary w-full shadow-md rounded-md p-4 transition-all"
-                            onClick={() => router.push(`/${router.locale}/app`)}
+                            className="mt-2 w-full rounded-md border-2 border-slate-300 p-2 font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-slate-300 hover:text-slate-700"
+                            onClick={() => router.push("/main")}
                         >
-                            {t("buttons.cancel")}
+                            Cancel
                         </button>
                     </section>
-                </main>
+                </section>
             )}
-        </div>
+        </main>
     );
 };
 
-export const getStaticProps: GetStaticProps<Props> = async ({ locale }) => ({
-    props: {
-        ...(await serverSideTranslations(locale ?? "en", ["auth/signout", "components/navbar"])),
-    },
-});
-
-export default SignOut;
+export default MainPage;
