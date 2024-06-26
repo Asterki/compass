@@ -33,14 +33,14 @@ const NotesBrowserComponent: NextPage<NotesBrowserProps> = (props) => {
                             className="fill-white transition-all group-data-[state=open]:rotate-180"
                         />
                     </Collapsible.Trigger>
-                    <Collapsible.Content className="-my-2 flex items-stretch">
-                        <div className="w-full rounded-md border-2 border-slate-800 p-2">
+                    <Collapsible.Content className="flex items-stretch">
+                        <div className="w-full -mt-2 border-l-2 border-slate-800 p-2">
                             {folder.children?.map((child) => {
                                 if (child.type === "folder") {
                                     return mapFolder(child);
                                 } else {
                                     return (
-                                        <div key={Date.now()} className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
+                                        <div key={`${folder.name}-${folder.name}`} className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
                                             <div>
                                                 <FontAwesomeIcon icon={faNoteSticky} className="mr-2 fill-white" />
                                                 {child.name}
@@ -77,8 +77,8 @@ const NotesBrowserComponent: NextPage<NotesBrowserProps> = (props) => {
                     className="fill-white transition-all group-data-[state=open]:rotate-180"
                 />
             </Collapsible.Trigger>
-            <Collapsible.Content className="-my-2 flex items-stretch">
-                <div className="w-full rounded-md border-2 border-slate-800 p-2">
+            <Collapsible.Content className="flex items-stretch">
+                <div className="w-full -mt-2 border-l-2 border-slate-800 p-2">
                     {props.notes.children?.map((child) => {
                         return mapFolder(child);
                     })}
