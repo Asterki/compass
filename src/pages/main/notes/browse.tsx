@@ -6,13 +6,14 @@ import { useSession } from "next-auth/react";
 // Icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faChevronCircleDown } from "@fortawesome/free-solid-svg-icons/faChevronCircleDown";
 
 // Components
 import NavbarComponent from "@/components/navbar";
+import NotesBrowserComponent from "@/components/notes/browser";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
 import { Inter } from "next/font/google";
-import { faChevronCircleDown } from "@fortawesome/free-solid-svg-icons/faChevronCircleDown";
 const inter = Inter({ subsets: ["latin"] });
 
 const NotesBrowsePage = () => {
@@ -42,45 +43,35 @@ const NotesBrowsePage = () => {
                     <div className="w-9/12">
                         <h1 className="text-2xl">Browse Notes</h1>
 
-                        <Collapsible.Root className="group w-full mt-2">
-                            <Collapsible.Trigger className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
-                                <div>
-                                    <FontAwesomeIcon icon={faFolder} className="mr-2 fill-white" />
-                                    Notes Folder 1
-                                </div>
-                                <FontAwesomeIcon
-                                    icon={faChevronCircleDown}
-                                    className="fill-white transition-all group-data-[state=open]:rotate-180"
-                                />
-                            </Collapsible.Trigger>
-                            <Collapsible.Content className="-my-2 flex items-stretch">
-                                <div className="w-full rounded-md border-2 border-slate-800 p-2">
-                                    <div className="my-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
-                                        <div>
-                                            <FontAwesomeIcon icon={faFolder} className="mr-2 fill-white" />
-                                            Notes Folder 1
-                                        </div>
-                                        <FontAwesomeIcon icon={faChevronCircleDown} className="fill-white" />
-                                    </div>
-                                    <div className="my-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
-                                        <div>
-                                            <FontAwesomeIcon icon={faFolder} className="mr-2 fill-white" />
-                                            Notes Folder 1
-                                        </div>
-                                        <FontAwesomeIcon icon={faChevronCircleDown} className="fill-white" />
-                                    </div>
-                                    <div className="my-2 flex w-full cursor-pointer items-center justify-between rounded-md bg-slate-800 p-2">
-                                        <div>
-                                            <FontAwesomeIcon icon={faFolder} className="mr-2 fill-white" />
-                                            Notes Folder 1
-                                        </div>
-                                        <FontAwesomeIcon icon={faChevronCircleDown} className="fill-white" />
-                                    </div>
-                                </div>
-                            </Collapsible.Content>
-                        </Collapsible.Root>
-
-                        
+                        <NotesBrowserComponent notes={{
+                            type: "folder",
+                            name: "Notes",
+                            link: null,
+                            children: [
+                                {
+                                    type: "note",
+                                    name: "Note 1",
+                                    link: "/notes/1",
+                                },
+                                {
+                                    type: "folder",
+                                    name: "Folder 1",
+                                    link: null,
+                                    children: [
+                                        {
+                                            type: "note",
+                                            name: "Note 2",
+                                            link: "/notes/2",
+                                        },
+                                        {
+                                            type: "note",
+                                            name: "Note 3",
+                                            link: "/notes/3",
+                                        },
+                                    ],
+                                }
+                            ]
+                        }} />
                     </div>
                 </main>
             )}
