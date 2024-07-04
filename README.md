@@ -1,40 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Class Compass
 
-## Getting Started
+This project is a web application that functions similarly to Notion. It allows users to create and manage notes, link between notes, and use predefined templates. The app uses Next.js for the frontend, TailwindCSS for styling, and TypeScript for type safety. User authentication is supported via GitHub, Discord, and Google login. Data is stored in a PostgreSQL database, managed with Prisma.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Class Compass](#class-compass)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Tech Stack](#tech-stack)
+  - [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Setup](#setup)
+    - [Running the Application](#running-the-application)
+  - [Usage](#usage)
+  - [Contributing](#contributing)
+  - [License](#license)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+- Create and manage notes
+- Link between notes
+- Use predefined templates
+- User authentication via GitHub, Discord, and Google
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Tech Stack
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- **Frontend**: Next.js, TailwindCSS, TypeScript
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL, Prisma
+- **Authentication**: GitHub, Discord, Google
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+### Prerequisites
 
-To learn more about Next.js, take a look at the following resources:
+- Node.js
+- PostgreSQL
+- GitHub, Discord, and Google OAuth credentials
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Clone the repository:
 
-## Deploy on Vercel
+    ```bash
+    git clone https://github.com/asterki/classcompass.git
+    cd classcompass
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+    ```bash
+    npm install
+    ```
+
+3. Set up the PostgreSQL database and Prisma:
+
+    ```bash
+    npm run prisma:migrate
+    ```
+
+4. Configure environment variables:
+
+    Create a `.env` file in the root of the project, you can use the `.env.example` file for reference
+
+### Running the Application
+
+1. Start the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+2. Open your browser and navigate to `http://localhost:3000`.
+
+## Usage
+
+- Sign up or log in using GitHub, Discord, or Google.
+- Create new notes and link them to other notes.
+- Use predefined templates to quickly start new notes.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure your code adheres to the project's coding standards and includes appropriate tests.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
