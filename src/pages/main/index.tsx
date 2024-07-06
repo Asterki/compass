@@ -1,6 +1,5 @@
-import Link from "next/link";
 import Head from "next/head"
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import NavbarComponent from "@/components/navbar";
 
@@ -9,6 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 import { useSession } from "next-auth/react";
 
+/**
+ * The main page component.
+ * Renders the main page content based on the user's session status.
+ */
 const MainPage = () => {
     const router = useRouter();
     const { data: session, status } = useSession({
@@ -25,6 +28,8 @@ const MainPage = () => {
             <Head>
                 <title>Dashboard | ClassCompass</title>
             </Head>
+
+            <h1>jewioqjio</h1>
 
             {status == "loading" && "Loading..."}
 
