@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 import Button from "@/components/button";
+import Input from "@/components/input";
 
 const ComponentTesting = () => {
     return (
@@ -19,6 +20,14 @@ const ComponentTesting = () => {
                 <Button variant="disabled">Disabled</Button>
                 <Button variant="warning">Warning</Button>
                 <Button variant="success">Success</Button>
+            </div>
+
+            <div>
+                <h1 className="text-2xl">Inputs</h1>
+                <Input placeholder="Default" />
+                <Input placeholder="Error" variant="error" />
+                <Input placeholder="Success" variant="success" />
+                <Input placeholder="Disabled" variant="disabled" />
             </div>
         </div>
     );
