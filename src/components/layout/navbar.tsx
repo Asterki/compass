@@ -1,5 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import Link from "next/link";
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
@@ -21,21 +23,19 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
                     </div>
                     <div>
                         <ul className="flex justify-end gap-2 lg:gap-4">
-                            <li className="transition-all hover:scale-105">
-                                <a href="#" className="font-semibold text-purple-500 hover:underline">
-                                    Home
-                                </a>
-                            </li>
-                            <li className="transition-all hover:scale-105">
-                                <a href="#" className="font-semibold text-purple-500 hover:underline">
-                                    About
-                                </a>
-                            </li>
-                            <li className="transition-all hover:scale-105">
-                                <a href="#" className="font-semibold text-purple-500 hover:underline">
-                                    Contact
-                                </a>
-                            </li>
+                            <Link className="font-semibold text-purple-400" href="/features">
+                                Features
+                            </Link>
+                            <Link
+                                className="font-semibold text-purple-400"
+                                target="_blank"
+                                href="https://github.com/Asterki/classcompass"
+                            >
+                                Open Source
+                            </Link>
+                            <Link className="font-semibold text-purple-400" href="/portal">
+                                Portal
+                            </Link>
                         </ul>
                     </div>
                 </div>
@@ -57,7 +57,7 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
         );
 
     return (
-        <header className="flex w-full items-center justify-between p-4 px-2 lg:px-24">
+        <header className="flex w-full items-center justify-between border-b-2 border-b-slate-200 p-2 px-2 lg:px-24">
             <div className="flex w-full items-center justify-between gap-2 lg:w-auto lg:justify-start lg:gap-10">
                 <div>
                     <h1 className="text-lg font-bold lg:text-2xl">Class Compass</h1>
@@ -69,7 +69,13 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
                         asChild
                         className="h-12 w-12 select-none rounded-full border-2 border-slate-300 transition-all hover:p-[1px]"
                     >
-                        <img src={props.session.user?.image ?? "https://placehold.co/300"} alt="" className="rounded-full" />
+                        <Image
+                            width={40}
+                            height={40}
+                            src={props.session.user?.image ?? "https://placehold.co/300"}
+                            alt=""
+                            className="rounded-full"
+                        />
                     </DropdownMenu.Trigger>
 
                     <DropdownMenu.Portal>
@@ -79,17 +85,20 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
                             className="min-w-[220px] animate-[slideUpAndFade_0.1s_ease-in-out] rounded-md bg-slate-300 p-2 will-change-[opacity,transform]"
                         >
                             <DropdownMenu.Group>
-                                <DropdownMenu.Item className="rounded-md p-2 outline-none transition-all hover:bg-slate-200 cursor-pointer"
+                                <DropdownMenu.Item
+                                    className="cursor-pointer rounded-md p-2 outline-none transition-all hover:bg-slate-200"
                                     onClick={() => router.push("/profile")}
                                 >
                                     Profile
                                 </DropdownMenu.Item>
-                                <DropdownMenu.Item className="rounded-md p-2 outline-none transition-all hover:bg-slate-200 cursor-pointer"
+                                <DropdownMenu.Item
+                                    className="cursor-pointer rounded-md p-2 outline-none transition-all hover:bg-slate-200"
                                     onClick={() => router.push("/settings")}
                                 >
                                     Settings
                                 </DropdownMenu.Item>
-                                <DropdownMenu.Item className="rounded-md p-2 outline-none transition-all hover:bg-slate-200 cursor-pointer"
+                                <DropdownMenu.Item
+                                    className="cursor-pointer rounded-md p-2 outline-none transition-all hover:bg-slate-200"
                                     onClick={() => router.push("/auth/signout")}
                                 >
                                     Logout
