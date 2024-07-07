@@ -4,11 +4,12 @@ const inter = Inter({ subsets: ["latin"] });
 import Button from "@/components/button";
 import Input from "@/components/input";
 import Select from "@/components/select";
+import Checkbox from "@/components/checkbox";
 
 const ComponentTesting = () => {
     return (
         <div
-            className={`flex min-h-screen w-full flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
+            className={`flex min-h-screen w-full flex-col items-center gap-10 ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <h1>Component Testing</h1>
             <p>Testing the component</p>
@@ -67,6 +68,12 @@ const ComponentTesting = () => {
                 <Input placeholder="Error" variant="error" />
                 <Input placeholder="Success" variant="success" />
                 <Input placeholder="Disabled" variant="disabled" />
+            </div>
+
+            <div>
+                <h1 className="text-2xl">Checkbox</h1>
+                <Checkbox label="Default" variant="default" />
+                <Checkbox label="Disabled" variant="disabled" />
             </div>
         </div>
     );

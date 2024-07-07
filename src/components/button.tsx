@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({ variant, children, ...props }) => {
             variantStyle = "bg-gradient-to-br from-red-400 to-red-500  p-2";
             break;
         case "disabled":
-            variantStyle = "bg-gray-500 text-gray-300 p-2";
+            variantStyle = "bg-gray-500 text-gray-300 p-2 cursor-not-allowed";
             break;
         case "warning":
             variantStyle = "bg-gradient-to-br from-orange-400 to-orange-500 p-2";

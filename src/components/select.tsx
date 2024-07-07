@@ -22,7 +22,7 @@ const SelectComponent: React.FC<SelectProps> = ({ variant = "default", ...props 
 
             break;
         case "disabled":
-            variantSelectStyle = "!text-gray-600";
+            variantSelectStyle = "!text-gray-600 cursor-not-allowed";
             break;
     }
 

@@ -20,7 +20,7 @@ const Input: React.FC<InputProps> = ({ variant = "default", children, ...props }
             variantStyle = "hover:border-green-500/70 focus:border-green-500";
             break;
         case "disabled":
-            variantStyle = "hover:border-gray-500/70 focus:border-gray-500";
+            variantStyle = "hover:border-gray-500/70 focus:border-gray-500 cursor-not-allowed";
             break;
     }
 
