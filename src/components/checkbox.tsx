@@ -35,7 +35,7 @@ const CheckboxComponent: React.FC<CheckboxProps> = ({
                 "cursor-pointer border-slate-300 group-hover:border-purple-400 data-[state=checked]:bg-purple-400 data-[state=checked]:border-purple-400";
             break;
         case "disabled":
-            variantCheckboxStyle = "border-gray-600 text-gray-600 cursor-not-allowed";
+            variantCheckboxStyle = "dark:border-gray-600 dark:text-gray-600 cursor-not-allowed";
             break;
     }
 

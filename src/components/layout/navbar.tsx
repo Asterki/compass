@@ -57,7 +57,7 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
         );
 
     return (
-        <header className="flex w-full items-center justify-between border-b-2 border-b-slate-200 p-2 px-2 lg:px-24">
+        <header className="flex w-full items-center justify-between border-b-2 border-b-slate-200/20 p-2 px-2 shadow-md lg:px-24">
             <div className="flex w-full items-center justify-between gap-2 lg:w-auto lg:justify-start lg:gap-10">
                 <div>
                     <h1 className="text-lg font-bold lg:text-2xl">Class Compass</h1>

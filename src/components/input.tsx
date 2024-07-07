@@ -7,7 +7,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<InputProps> = ({ variant = "default", children, ...props }) => {
     let variantStyle = "";
-    const baseStyle = "rounded-md border-2 bg-transparent p-2 outline-none transition-all border-slate-200/30 ";
+    const baseStyle = "rounded-md border-2 bg-transparent p-2 outline-none transition-all dark:border-slate-200/30 border-slate-400/30";
 
     switch (variant) {
         case "default":
