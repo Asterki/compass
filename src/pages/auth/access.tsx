@@ -21,7 +21,7 @@ const SignUpPage = ({ providers }: InferGetServerSidePropsType<typeof getServerS
         >
             <div className="w-11/12 text-center lg:w-3/12">
                 <h1 className="text-3xl font-semibold">Register to ClassCompass</h1>
-                <p>Select a provider</p>
+                <p>Select a sign-in method</p>
 
                 <div className="mt-4 flex flex-col gap-4">
                     {Object.values(providers).map((provider) => {

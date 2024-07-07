@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
-import NavbarComponent from "@/components/navbar";
+import NavbarComponent from "@/components/layout/navbar";
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 
-import NavbarComponent from "@/components/navbar";
+import NavbarComponent from "@/components/layout/navbar";
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -32,7 +32,7 @@ const MainPage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    <section className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-5/12">
+                    <section className="absolute left-1/2 top-1/2 w-11/12 -translate-x-1/2 -translate-y-1/2 md:w-5/12">
                         <h2 className="text-center text-3xl font-bold">Hello, {session.user.name}!</h2>
                         <p className="text-center text-lg">Are you sure you want to sign out of your account?</p>
                         <p className="text-center text-lg">You will need to log in again to access ClassCompass</p>
