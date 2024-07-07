@@ -3,6 +3,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 import Button from "@/components/button";
 import Input from "@/components/input";
+import Select from "@/components/select";
 
 const ComponentTesting = () => {
     return (
@@ -20,6 +21,44 @@ const ComponentTesting = () => {
                 <Button variant="disabled">Disabled</Button>
                 <Button variant="warning">Warning</Button>
                 <Button variant="success">Success</Button>
+            </div>
+
+            <div>
+                <h1 className="text-2xl">Selects</h1>
+                <Select
+                    variant="default"
+                    options={[
+                        {
+                            value: "1",
+                            label: "Option 1",
+                        },
+                        {
+                            value: "2",
+                            label: "Option 2",
+                        },
+                        {
+                            value: "3",
+                            label: "Option 3",
+                        },
+                    ]}
+                ></Select>
+                <Select
+                    variant="disabled"
+                    options={[
+                        {
+                            value: "1",
+                            label: "Option 1",
+                        },
+                        {
+                            value: "2",
+                            label: "Option 2",
+                        },
+                        {
+                            value: "3",
+                            label: "Option 3",
+                        },
+                    ]}
+                ></Select>
             </div>
 
             <div>
