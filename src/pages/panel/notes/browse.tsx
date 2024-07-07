@@ -9,7 +9,7 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { faChevronCircleDown } from "@fortawesome/free-solid-svg-icons/faChevronCircleDown";
 
 // Components
-import NavbarComponent from "@/components/navbar";
+import NavbarComponent from "@/components/layout/navbar";
 import NotesBrowserComponent from "@/components/notes/browser";
 import * as Collapsible from "@radix-ui/react-collapsible";
 
