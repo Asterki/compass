@@ -1,7 +1,7 @@
-import Head from "next/head"
+import Head from "next/head";
 import { useRouter } from "next/navigation";
 
-import NavbarComponent from "@/components/navbar";
+import NavbarComponent from "@/components/layout/navbar";
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -29,11 +29,9 @@ const MainPage = () => {
                 <title>Dashboard | ClassCompass</title>
             </Head>
 
-            <h1>jewioqjio</h1>
-
             {status == "loading" && "Loading..."}
 
-            {status == "authenticated" &&  session.user !== undefined && (
+            {status == "authenticated" && session.user !== undefined && (
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 

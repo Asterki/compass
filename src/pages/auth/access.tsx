@@ -3,6 +3,8 @@ import { getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 
+import Button from "@/components/button";
+
 // Fonts
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -31,14 +33,14 @@ const SignUpPage = ({ providers }: InferGetServerSidePropsType<typeof getServerS
                         if (provider.name === "Discord") icon = faDiscord;
                         
                         return (
-                            <button
+                            <Button
+                                variant="secondary"
                                 key={provider.name}
-                                className="rounded-md border-2 border-slate-200 p-2 transition-all hover:scale-105 hover:bg-slate-700 hover:text-purple-50 dark:text-white dark:hover:bg-slate-200 dark:hover:text-slate-900"
                                 onClick={() => signIn(provider.id)}
                             >
                                 {icon && <FontAwesomeIcon icon={icon} className="mr-2" />}
                                 {provider.name}
-                            </button>
+                            </Button>
                         );
                     })}
                 </div>

@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 import { useSession } from "next-auth/react";
+import Button from "@/components/button";
 
 export default function Home() {
     const router = useRouter();
@@ -26,7 +27,7 @@ export default function Home() {
 
             <main className="mt-16 flex h-full w-full flex-col-reverse items-center justify-around gap-12 p-2 lg:mt-0 lg:flex-row lg:gap-6 lg:p-32">
                 <div className="w-full px-4 text-center lg:w-11/12 lg:text-left">
-                    <h1 className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-5xl font-bold text-transparent">
+                    <h1 className="bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-5xl font-bold text-transparent dark:from-blue-400 dark:to-purple-500">
                         Manage your life in a single, centralized, easy-to-use platform Made for students, by students.
                     </h1>
 
@@ -39,18 +40,20 @@ export default function Home() {
                     </p>
 
                     <div className="mt-6 flex justify-center gap-4 lg:justify-start">
-                        <button
-                            className="mt-2 rounded-md bg-gradient-to-br from-purple-400 to-purple-500 px-4 py-2 font-semibold text-white shadow-md transition-all hover:scale-105"
+                        <Button
+                            variant="primary"
+                            className="text-lg font-semibold"
                             onClick={() => router.push("/auth/access")}
                         >
                             Register Now
-                        </button>
-                        <button
-                            className="mt-2 rounded-md border-2 border-slate-200 px-4 py-2 font-semibold shadow-md transition-all hover:scale-105 dark:hover:bg-slate-300 dark:hover:text-slate-700"
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="text-lg font-semibold"
                             onClick={() => router.push("/features")}
                         >
                             See Features
-                        </button>
+                        </Button>
                     </div>
                 </div>
                 <div className="flex w-1/2 items-center justify-center text-center">

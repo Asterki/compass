@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 
 import NavbarComponent from "@/components/layout/navbar";
+import Button from "@/components/button";
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
@@ -36,18 +37,12 @@ const MainPage = () => {
                         <h2 className="text-center text-3xl font-bold">Hello, {session.user.name}!</h2>
                         <p className="text-center text-lg">Are you sure you want to sign out of your account?</p>
                         <p className="text-center text-lg">You will need to log in again to access ClassCompass</p>
-                        <button
-                            className="mt-2 w-full rounded-md bg-gradient-to-br from-red-400 to-red-500 p-2 font-bold text-white shadow-md transition-all hover:scale-105"
-                            onClick={() => signOut()}
-                        >
+                        <Button variant="destructive" className="w-full my-2" onClick={() => signOut()}>
                             Sign Out
-                        </button>
-                        <button
-                            className="mt-2 w-full rounded-md border-2 border-slate-300 p-2 font-bold text-white shadow-md transition-all hover:scale-105 hover:bg-slate-300 hover:text-slate-700"
-                            onClick={() => router.push("/main")}
-                        >
+                        </Button>
+                        <Button variant="secondary" className="w-full my-2" onClick={() => router.push("/main")}>
                             Cancel
-                        </button>
+                        </Button>
                     </section>
                 </main>
             )}
