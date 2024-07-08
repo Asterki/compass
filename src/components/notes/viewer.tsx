@@ -1,6 +1,5 @@
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import remarkLintListItemIndent from 'remark-lint-list-item-bullet-indent'
 import remarkBreaks from 'remark-breaks'
 
 interface Note {
@@ -49,7 +48,7 @@ const NoteViewer: React.FC<Note> = props => {
                     <blockquote className="block border-l-2 border-gray-200/20 p-2 *:block" {...props} />
                 ),
                 p: ({ node, ...props }) => <p className="w-full text-base" {...props} />,
-                ul: ({ node, ...props }) => <ul className="list-disc list-inside" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc list-inside ml-4" {...props} />,
                 ol: ({ node, ...props }) => <ol className="list-decimal list-inside" {...props} />,
                 li: ({ node, ...props }) => <li className="text-base" {...props} />,
                 code: ({ node, ...props }) => <code className="rounded-md bg-slate-700 p-1" {...props} />,
