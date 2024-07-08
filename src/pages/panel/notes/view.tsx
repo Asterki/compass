@@ -1,21 +1,64 @@
-import Head from "next/head";
+import Head from 'next/head'
 
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
-import NavbarComponent from "@/components/layout/navbar";
+import NavbarComponent from '@/components/layout/navbar'
+import NoteViewer from '@/components/notes/viewer'
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 
 const NotesViewPage = () => {
-    const router = useRouter();
+    const router = useRouter()
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push("/auth/access");
-        },
-    });
+            router.push('/auth/access')
+        }
+    })
+
+    const tempNote = {
+        title: 'Some title',
+        content:
+        "# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6\nUsing two asterisks **this text is bold**.  \nTwo underscores __work as well__.  \nLet's make it *italic now*.  \nYou guessed it, _one underscore is also enough_.  \nCan we combine **_both of that_?** Absolutely.\nWhat if I want to ~~strikethrough~~?\n> This is a blockquote.\n> Want to write on a new line with space between?\n>\n> > And nested? No problem at all.\n> >\n> > > PS. you can **style** your text _as you want_.\n![text if the image fails to load](https://placehold.co/200/png 'Text displayed on hover')\n[markdown-cheatsheet]: https://github.com/im-luka/markdown-cheatsheet\n[docs]: https://github.com/adam-p/markdown-here\n[Like it so far? Follow me on GitHub](https://github.com/im-luka)\n[My Markdown Cheatsheet - star it if you like it][markdown-cheatsheet]\nFind some great docs [here][docs]\n    I created `.env` file at the root.\n    Backticks inside backticks? `` `No problem.` ``\n    ```\n    {\n      learning: 'Markdown',\n      showing: 'block code snippet'\n    }\n    ```\n    ```js\n    const x = 'Block code snippet in JS';\n    console.log(x);\n    ```\n1. HTML\n2. CSS\n3. Javascript\n4. React\n5. I'm Frontend Dev now 👨🏼‍🎨\n---\n+ Node.js\n+ Express\n+ Nest.js\nLearning Backend ⌛️    \n---\n1. Learn Basics\n    1. HTML\n    2. CSS\n    7. Javascript\n2. Learn One Framework\n   - React \n     - Router\n     - Redux\n   * Vue\n   + Svelte\n   \n| Left Align (default) | Center Align | Right Align |\n| :------------------- | :----------: | ----------: |\n| React.js             | Node.js      | MySQL       |\n| Next.js              | Express      | MongoDB     |\n| Vue.js               | Nest.js      | Redis       |\n#### I am working on a new project. [^1]\n[^1]: Stack is: React, Typescript, Tailwind CSS  \nProject is about music & movies.\n##### Hope you will like it. [^see]\n[^see]: Loading... ⌛️\n- [ ] Hello there\n- [x] Hey",
+        createdAt: new Date(Date.now()).toUTCString(),
+        updatedAt: new Date(Date.now()).toUTCString(),
+        folder: 'Some folder',
+        user: 'Some user',
+        tags: ['Some tag', 'Another tag'],
+        attachments: [
+            {
+                name: 'Some attachment',
+                type: 'pdf',
+                url: 'https://example.com/some-attachment.pdf'
+            },
+            {
+                name: 'Another attachment',
+                type: 'image',
+                url: 'https://example.com/another-attachment.png'
+            },
+            {
+                name: 'Yet another attachment',
+                type: 'document',
+                url: 'https://example.com/yet-another-attachment.docx'
+            }
+        ],
+        links: [
+            {
+                linkID: 'some-link',
+                url: 'https://example.com/some-link'
+            },
+            {
+                linkID: 'another-link',
+                url: 'https://example.com/another-link'
+            },
+            {
+                linkID: 'yet-another-link',
+                url: 'https://example.com/yet-another-link'
+            }
+        ]
+    }
 
     return (
         <div
@@ -25,9 +68,9 @@ const NotesViewPage = () => {
                 <title>Notes | Class Compass</title>
             </Head>
 
-            {status == "loading" && "Loading..."}
+            {status == 'loading' && 'Loading...'}
 
-            {status == "authenticated" && session.user !== undefined && (
+            {status == 'authenticated' && session.user !== undefined && (
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
@@ -38,30 +81,13 @@ const NotesViewPage = () => {
                         </div>
 
                         <div className="mt-2 flex w-9/12 flex-col justify-start gap-2">
-                            <h2 className="text-2xl font-bold">Some title</h2>
-                            <p className="text-sm">
-                                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus quod a nobis.
-                                Libero dicta et dolore sapiente possimus non alias ratione illum, vero distinctio,
-                                cumque deleniti necessitatibus accusantium recusandae atque voluptas. Cum laboriosam
-                                incidunt numquam, atque expedita voluptate nesciunt repellat non consequuntur aspernatur
-                                ab cumque. Adipisci deserunt perspiciatis voluptates nulla, itaque ipsa quas tempora,
-                                quaerat minima corporis sed nam repellendus officiis, vitae explicabo. Ab totam ipsum
-                                labore laboriosam repellat odit quo minima qui, adipisci corrupti aspernatur nam tempora
-                                fugit eligendi expedita minus repudiandae dolor quibusdam iusto provident. Ratione
-                                veniam saepe voluptate maiores earum quo voluptatibus ex pariatur? Dignissimos eius
-                                nihil, doloribus in quae quam, earum minus corrupti ratione molestias quos obcaecati
-                                facere, veritatis aliquid fugiat iure nulla quibusdam totam dolore. Ut corporis,
-                                laudantium, dolor quia et officiis labore error odit est consequatur aperiam
-                                consectetur. Alias aspernatur nostrum ea deleniti repellendus doloremque voluptatum
-                                porro autem iste, laboriosam nobis eos odio sapiente quisquam, nemo adipisci molestiae
-                                perferendis ratione consequatur unde nulla molestias quas!
-                            </p>
+                            <NoteViewer note={tempNote} />
                         </div>
                     </div>
                 </main>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default NotesViewPage;
+export default NotesViewPage
