@@ -47,8 +47,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   preferences   preferences?
-  Note          Note[]
-  Folder        Folder[]
 
   @@map("users")
 }
@@ -67,28 +65,4 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
-}
-
-model Note {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  folder    Folder   @relation(fields: [folderId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-
-  userId   String @map("user_id")
-  folderId String @map("folder_id")
-}
-
-model Folder {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-
-  userId String @map("user_id")
-  Note   Note[]
 }
