@@ -1,21 +1,21 @@
-import Head from "next/head";
+import Head from 'next/head'
 
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
-import NavbarComponent from "@/components/layout/navbar";
+import NavbarComponent from '@/components/layout/navbar'
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 
 const NotesViewPage = () => {
-    const router = useRouter();
+    const router = useRouter()
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push("/auth/access");
-        },
-    });
+            router.push('/auth/access')
+        }
+    })
 
     return (
         <div
@@ -25,9 +25,9 @@ const NotesViewPage = () => {
                 <title>Notes | Class Compass</title>
             </Head>
 
-            {status == "loading" && "Loading..."}
+            {status == 'loading' && 'Loading...'}
 
-            {status == "authenticated" && session.user !== undefined && (
+            {status == 'authenticated' && session.user !== undefined && (
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
@@ -61,7 +61,7 @@ const NotesViewPage = () => {
                 </main>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default NotesViewPage;
+export default NotesViewPage

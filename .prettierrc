@@ -2,5 +2,20 @@
     "tabWidth": 4,
     "useTabs": false,
     "printWidth": 120,
-    "plugins": ["prettier-plugin-tailwindcss"]
+    "plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-prisma"],
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid",
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": "*.json",
+            "options": {
+                "printWidth": 200
+            }
+        }
+    ]
 }
