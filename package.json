@@ -28,12 +28,14 @@
     "react-markdown": "^9.0.1",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.0.1",
     "cypress": "^13.13.0",
     "eslint": "^8",
