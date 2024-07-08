@@ -37,9 +37,7 @@ const NoteViewer: React.FC<Note> = props => {
                 h5: ({ node, ...props }) => <h5 className="text-sm font-bold" {...props} />,
                 h6: ({ node, ...props }) => <h6 className="text-xs font-bold" {...props} />,
                 a: ({ node, ...props }) => <a className="text-blue-500 hover:underline" {...props} />,
-                table: ({ node, ...props }) => (
-                    <table border={0} className="table-auto rounded-md" {...props} />
-                ),
+                table: ({ node, ...props }) => <table border={0} className="table-auto rounded-md" {...props} />,
                 thead: ({ node, ...props }) => <thead className="!bg-slate-950" {...props} />,
                 tbody: ({ node, ...props }) => <tbody className="!bg-slate-800" {...props} />,
                 th: ({ node, ...props }) => <th className="border border-gray-700 p-2" {...props} />,
@@ -48,11 +46,11 @@ const NoteViewer: React.FC<Note> = props => {
                     <blockquote className="block border-l-2 border-gray-200/20 p-2 *:block" {...props} />
                 ),
                 p: ({ node, ...props }) => <p className="w-full text-base" {...props} />,
-                ul: ({ node, ...props }) => <ul className="list-disc list-inside ml-4" {...props} />,
-                ol: ({ node, ...props }) => <ol className="list-decimal list-inside" {...props} />,
+                ul: ({ node, ...props }) => <ul className="ml-4 list-inside list-disc" {...props} />,
+                ol: ({ node, ...props }) => <ol className="ml-4 list-inside list-decimal" {...props} />,
                 li: ({ node, ...props }) => <li className="text-base" {...props} />,
                 code: ({ node, ...props }) => <code className="rounded-md bg-slate-700 p-1" {...props} />,
-                pre: ({ node, ...props }) => <pre className="bg-gray-50 p-2" {...props} />,
+                pre: ({ node, ...props }) => <pre className="w-full rounded-md bg-slate-800 p-2" {...props} />,
                 img: ({ node, ...props }) => <img className="max-w-full" {...props} />,
                 hr: ({ node, ...props }) => <hr className="border-t border-gray-200" {...props} />,
                 em: ({ node, ...props }) => <em className="italic" {...props} />,
