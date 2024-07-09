@@ -111,5 +111,16 @@ const updateNote = async (noteId: string, title: string, content: string) => {
     })
 }
 
-export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists }
+const findNoteByName = async (name: string, folderId: string) => {
+    const notes = await prismaClient.note.find({
+        where: {
+            title: name.toLowerCase(),
+            folder_id: folderId
+        }, 
+    })
+
+    return notes
+}
+
+export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists, findNoteByName }
 export type { Note, Attachment, Link }
