@@ -31,32 +31,26 @@ interface Note {
     links: Link[]
 }
 
-const createNote = async (title: string, content: string, folderId: string, userId: string) => {
+const createNote = async (data: {
+    title: string
+    content: string
+    folderId: string
+    ownerId: string
+}): Promise<string> => {
     const noteID = uuidv4()
-
-    const note: Note = {
-        id: noteID,
-        title,
-        content,
-        created_at: new Date(),
-        owner_id: userId,
-        folder_id: folderId,
-        attachments: [],
-        links: []
-    }
 
     prismaClient.note.create({
         data: {
-            id: note.id,
-            title: note.title,
-            content: note.content,
-            created_at: note.created_at,
-            owner_id: note.owner_id,
-            folder_id: note.folder_id
+            id: noteID,
+            title: data.title,
+            content: data.content,
+            created_at: new Date(),
+            owner_id: data.ownerId,
+            folder_id: data.folderId
         }
     })
 
-    return note.id
+    return noteID
 }
 
 const deleteNote = (noteId: string) => {
