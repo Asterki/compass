@@ -75,6 +75,20 @@ const getNote = async (noteId: string) => {
     return note
 }
 
+const noteExists = async (noteId: string) => {
+    const note = await prismaClient.note.findUnique({
+        where: {
+            id: noteId
+        },
+        select: {
+            owner_id: true
+        }
+    })
+
+    if (!note) return false
+    return note.owner_id
+}
+
 const getNotes = async (folderId: string) => {
     const notes = await prismaClient.note.findMany({
         where: {
@@ -97,5 +111,5 @@ const updateNote = async (noteId: string, title: string, content: string) => {
     })
 }
 
-export { createNote, deleteNote, getNote, getNotes, updateNote }
+export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists }
 export type { Note, Attachment, Link }

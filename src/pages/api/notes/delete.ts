@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { getNote } from '@/services/notes'
+import { deleteNote, noteExists } from '@/services/notes'
 import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -35,11 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await getNote(parsedBody.data.noteId)
+        const note = await noteExists(parsedBody.data.noteId)
         if (!note) return res.status(404).json({ message: 'Note not found' })
 
-        if (note?.owner_id !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
-        return res.status(200).json({ message: 'Note found', note })
+        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+
+        if (note) {
+            deleteNote(parsedBody.data.noteId)
+            return res.status(200).json({ message: 'Note deleted' })
+        }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }
