@@ -31,32 +31,26 @@ interface Note {
     links: Link[]
 }
 
-const createNote = async (title: string, content: string, folderId: string, userId: string) => {
+const createNote = async (data: {
+    title: string
+    content: string
+    folderId: string
+    ownerId: string
+}): Promise<string> => {
     const noteID = uuidv4()
-
-    const note: Note = {
-        id: noteID,
-        title,
-        content,
-        created_at: new Date(),
-        owner_id: userId,
-        folder_id: folderId,
-        attachments: [],
-        links: []
-    }
 
     prismaClient.note.create({
         data: {
-            id: note.id,
-            title: note.title,
-            content: note.content,
-            created_at: note.created_at,
-            owner_id: note.owner_id,
-            folder_id: note.folder_id
+            id: noteID,
+            title: data.title,
+            content: data.content,
+            created_at: new Date(),
+            owner_id: data.ownerId,
+            folder_id: data.folderId
         }
     })
 
-    return note.id
+    return noteID
 }
 
 const deleteNote = (noteId: string) => {
@@ -71,10 +65,28 @@ const getNote = async (noteId: string) => {
     const note = await prismaClient.note.findUnique({
         where: {
             id: noteId
+        },
+        include: {
+            attachments: true,
+            links: true
         }
     })
 
     return note
+}
+
+const noteExists = async (noteId: string) => {
+    const note = await prismaClient.note.findUnique({
+        where: {
+            id: noteId
+        },
+        select: {
+            owner_id: true
+        }
+    })
+
+    if (!note) return false
+    return note.owner_id
 }
 
 const getNotes = async (folderId: string) => {
@@ -99,4 +111,5 @@ const updateNote = async (noteId: string, title: string, content: string) => {
     })
 }
 
-export { createNote, deleteNote, getNote, getNotes, updateNote }
+export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists }
+export type { Note, Attachment, Link }
