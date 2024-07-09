@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { updateNote, noteExists } from '@/services/notes'
+import { updateNote } from '@/services/notes'
 import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -9,6 +9,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
     message: string
+    note?: any // Change this to Note once the Note type is exported
 }
 
 /**
@@ -25,9 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36),
-            title: z.string({}).min(1).max(34),
-            content: z.string({}).min(1).max(10000)
+            noteId: z.string({}).min(36).max(36)
         })
         .safeParse(req.body)
 
@@ -36,15 +35,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await noteExists(parsedBody.data.noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
+        const note = await getNote(parsedBody.data.noteId)
+        if (!note) return res.status(404).json({ message: 'Note not found' })
 
-        // Check if the note belongs to the user
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
-
-        // Update the note
-        await updateNote(parsedBody.data.noteId, parsedBody.data.title, parsedBody.data.content)
-        return res.status(200).json({ message: 'Note updated' })
+        if (note?.owner_id !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+        return res.status(200).json({ message: 'Note found', note })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }
