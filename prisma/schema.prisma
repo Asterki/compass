@@ -69,26 +69,55 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-model Note {
-  id        String   @id @default(cuid())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  folder    Folder   @relation(fields: [folderId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+model Attachments {
+  id          String  @id @default(cuid())
+  url         String
+  label        String
 
-  userId   String @map("user_id")
-  folderId String @map("folder_id")
+  note_id     String  @map("note_id")
+  note       Note    @relation(fields: [note_id], references: [id], onDelete: Cascade)
+  
+  @@map("attachments")
+}
+
+model Link {
+  id          String  @id @default(cuid())
+  links_to     String  @map("note_id")
+  label       String
+
+  note       Note    @relation(fields: [links_to], references: [id], onDelete: Cascade)
+  
+  @@map("links")
+}
+
+model Note {
+  id          String  @id @default(cuid())
+  title       String
+  content     String
+  created_at  DateTime @map("created_at")
+  
+  owner_id    String  @map("owner_id")
+  owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+
+  folder_id   String? @map("folder_id")
+  folder      Folder? @relation(fields: [folder_id], references: [id])
+
+  attachments Attachments[]
+  links       Link[]
+
+  @@map("notes")
 }
 
 model Folder {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  id          String  @id @default(cuid())
+  name        String
+  folder_id   String? @map("folder_id")
+  created_at  DateTime @map("created_at")
+  
+  owner_id    String  @map("owner_id")
+  owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  
+  notes       Note[]
 
-  userId String @map("user_id")
-  Note   Note[]
+  @@map("folders")
 }
