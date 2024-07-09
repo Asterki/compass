@@ -65,6 +65,10 @@ const getNote = async (noteId: string) => {
     const note = await prismaClient.note.findUnique({
         where: {
             id: noteId
+        },
+        include: {
+            attachments: true,
+            links: true
         }
     })
 
@@ -94,3 +98,4 @@ const updateNote = async (noteId: string, title: string, content: string) => {
 }
 
 export { createNote, deleteNote, getNote, getNotes, updateNote }
+export type { Note, Attachment, Link }
