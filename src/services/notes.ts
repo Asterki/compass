@@ -99,14 +99,15 @@ const getNotes = async (folderId: string) => {
     return notes
 }
 
-const updateNote = async (noteId: string, title: string, content: string) => {
+const updateNote = async (noteId: string, title: string, content: string, tags: string[]) => {
     await prismaClient.note.update({
         where: {
             id: noteId
         },
         data: {
             title,
-            content
+            content,
+            tags
         }
     })
 }

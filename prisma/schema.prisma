@@ -105,6 +105,8 @@ model Note {
   attachments Attachments[]
   links       Link[]
 
+  tags        String[]
+
   @@map("notes")
 }
 
@@ -118,6 +120,8 @@ model Folder {
   owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
   
   notes       Note[]
+
+  tags        String[]
 
   @@map("folders")
 }

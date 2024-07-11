@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { updateNote } from '@/services/notes'
+import { updateNote, getNote } from '@/services/notes'
 import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -26,7 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36)
+            noteId: z.string({}).min(36).max(36),
+            data: z.object({
+                title: z.string({}).min(1).max(34),
+                content: z.string({}).min(1).max(10000),
+                tags: z.array(z.string().min(2).max(12)).max(5),
+                folderId: z.string({}).min(36).max(36)
+            })
         })
         .safeParse(req.body)
 
@@ -39,7 +45,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         if (!note) return res.status(404).json({ message: 'Note not found' })
 
         if (note?.owner_id !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
-        return res.status(200).json({ message: 'Note found', note })
+
+        // Update the note
+        updateNote(
+            parsedBody.data.noteId,
+            parsedBody.data.data.title,
+            parsedBody.data.data.content,
+            parsedBody.data.data.tags
+        )
+
+        return res.status(200).json({ message: 'Note updated' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }
