@@ -108,6 +108,8 @@ model Note {
   attachments Attachments[]
   links       Link[]
 
+  tags        String[]
+
   @@map("notes")
 }
 
@@ -122,6 +124,8 @@ model Folder {
   tags        String[]
   
   notes       Note[]
+
+  tags        String[]
 
   @@map("folders")
 }
