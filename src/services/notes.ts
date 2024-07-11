@@ -101,7 +101,7 @@ const getNotes = async (folderId: string) => {
     return notes
 }
 
-const updateNote = async (noteId: string, title: string, content: string, tags: string[]) => {
+const updateNote = async (noteId: string, title: string, content: string, tags: string[], archived: boolean) => {
     await prismaClient.note.update({
         where: {
             id: noteId
@@ -109,9 +109,12 @@ const updateNote = async (noteId: string, title: string, content: string, tags: 
         data: {
             title,
             content,
-            tags
+            tags,
+            archived
         }
     })
+
+    return noteId
 }
 
 const findNotesByName = async (name: string, folderId: string) => {
