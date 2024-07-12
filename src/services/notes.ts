@@ -46,7 +46,7 @@ const createNote = async (data: {
             content: data.content,
             created_at: new Date(),
             owner_id: data.ownerId,
-            folder_id: data.folderId
+            folder_id: data.folderId,
         }
     })
 

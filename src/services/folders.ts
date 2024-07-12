@@ -43,17 +43,6 @@ const getFolder = async (folderId: string) => {
     })
 }
 
-const moveFolder = async (folderId: string, newParentFolderId: string) => {
-    prismaClient.folder.update({
-        where: {
-            id: folderId
-        },
-        data: {
-            folder_id: newParentFolderId
-        }
-    })
-}
-
 const getFolders = async (userId: string) => {
     return prismaClient.folder.findMany({
         where: {
@@ -81,13 +70,14 @@ const getItemsInFolder = async (folderId: string) => {
     }
 }
 
-const updateFolder = async (folderId: string, name: string) => {
-    prismaClient.folder.update({
+const updateFolder = async (folderId: string, name: string, newParentFolderId: string) => {
+    return await prismaClient.folder.update({
         where: {
-            id: folderId
+            id: folderId,
         },
         data: {
-            name
+            name,
+            folder_id: newParentFolderId
         }
     })
 }
@@ -102,13 +92,17 @@ const findFoldersByName = async (name: string, userId: string) => {
 }
 
 const folderExist = async (folderID: string) => {
-    const result = await prismaClient.folder.findFirst({
+    const folder = await prismaClient.folder.findFirst({
         where: {
             folder_id: folderID
+        },
+        select: {
+            owner_id: true
         }
     })
 
-    return !result == null
+    if (!folder) return false
+    return folder.owner_id
 }
 
 export type { Folder }
@@ -119,7 +113,6 @@ export {
     getFolder,
     getFolders,
     getItemsInFolder,
-    moveFolder,
     updateFolder,
     folderExist
 }
