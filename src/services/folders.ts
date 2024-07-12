@@ -102,4 +102,13 @@ const findFoldersByName = async (name: string, userId: string) => {
 }
 
 export type { Folder }
-export { createFolder }
+export {
+    createFolder,
+    deleteFolder,
+    findFoldersByName,
+    getFolder,
+    getFolders,
+    getItemsInFolder,
+    moveFolder,
+    updateFolder
+}
