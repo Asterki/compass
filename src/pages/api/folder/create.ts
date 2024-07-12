@@ -1,31 +1,29 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { deleteNote, noteExists } from '@/services/notes'
-import { Note } from '@/services/notes'
+import { createFolder } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: string
+    message: 'Folder created' | 'Invalid request body' | 'Internal Server Error' | 'Method Not Allowed' | 'Unauthorized'
+    folderID?: string
 }
 
 /**
- * Handles the deletion for a note by its ID.
- *
- * @param req - The NextApiRequest object.
- * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the note deletion.
+ * Handles the creation of a folder.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
     const session = await getServerSession(req, res, authOptions)
     if (!session || !session.user) return res.status(401).json({ message: 'Unauthorized' })
 
+    // Verify Values
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36)
+            name: z.string({}).min(1).max(34),
+            parentFolder: z.string().min(36).max(36).optional()
         })
         .safeParse(req.body)
 
@@ -34,15 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await noteExists(parsedBody.data.noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' })
+        // Main logic
+        let userID = (session.user as any).id as string
 
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
-
-        if (note) {
-            deleteNote(parsedBody.data.noteId)
-            return res.status(200).json({ message: 'Note deleted' })
-        }
+        let folderID = await createFolder(parsedBody.data.name, userID, parsedBody.data.parentFolder)
+        return res.status(200).json({ message: 'Folder created', folderID })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }

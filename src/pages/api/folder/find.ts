@@ -1,22 +1,21 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { deleteNote, noteExists } from '@/services/notes'
-import { Note } from '@/services/notes'
+import { findFoldersByName } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: string
+    message: 'Folders found' | 'Invalid request body' | 'Internal Server Error' | 'Method Not Allowed' | 'Unauthorized'
+    folders?: {
+        id: string
+        name: string
+    }[]
 }
 
 /**
- * Handles the deletion for a note by its ID.
- *
- * @param req - The NextApiRequest object.
- * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the note deletion.
+ * Handles the API request to find folders by name.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
@@ -25,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36)
+            folderName: z.string({}).min(1).max(36)
         })
         .safeParse(req.body)
 
@@ -34,15 +33,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await noteExists(parsedBody.data.noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' })
+        const userID = (session.user as any).id as string
+        const folders = await findFoldersByName(parsedBody.data.folderName, userID)
 
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+        const returnedFolders = folders.map(folder => {
+            return {
+                id: folder.id,
+                name: folder.name
+            }
+        })
 
-        if (note) {
-            deleteNote(parsedBody.data.noteId)
-            return res.status(200).json({ message: 'Note deleted' })
-        }
+        return res.status(200).json({ message: 'Folders found', folders: returnedFolders })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }
