@@ -20,11 +20,11 @@ type ResponseData = {
 }
 
 /**
- * Handles the get of a folder by it's ID.
- *
- * @param req - The NextApiRequest object.
- * @param res - The NextApiResponse object.
- * @returns A JSON response returning the folder contents.
+ * Handles the HTTP POST request to retrieve a folder.
+ * 
+ * @param req - The NextApiRequest object representing the incoming request.
+ * @param res - The NextApiResponse object representing the outgoing response.
+ * @returns A Promise that resolves to the response data.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })

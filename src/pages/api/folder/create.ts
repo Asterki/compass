@@ -12,11 +12,11 @@ type ResponseData = {
 }
 
 /**
- * Handles the creation of a new folder.
- *
+ * Handles the creation of a folder.
+ * 
  * @param req - The NextApiRequest object.
  * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the folder creation.
+ * @returns A Promise that resolves to void.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
