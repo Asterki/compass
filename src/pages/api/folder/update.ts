@@ -18,10 +18,6 @@ type ResponseData = {
 
 /**
  * Handles the update request for a folder.
- * 
- * @param req - The NextApiRequest object representing the HTTP request.
- * @param res - The NextApiResponse object representing the HTTP response.
- * @returns A Promise that resolves to the updated folder or an error response.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })

@@ -16,10 +16,6 @@ type ResponseData = {
 
 /**
  * Handles the API request to find folders by name.
- * 
- * @param req - The NextApiRequest object representing the incoming request.
- * @param res - The NextApiResponse object representing the outgoing response.
- * @returns A Promise that resolves to the response data.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
