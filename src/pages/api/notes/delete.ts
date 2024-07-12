@@ -9,15 +9,14 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
     message: string
-    note?: any // Change this to Note once the Note type is exported
 }
 
 /**
- * Handles the search for a note by its ID.
+ * Handles the deletion for a note by its ID.
  *
  * @param req - The NextApiRequest object.
  * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the note creation.
+ * @returns A JSON response indicating the success or failure of the note deletion.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })

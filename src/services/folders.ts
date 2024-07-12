@@ -101,6 +101,16 @@ const findFoldersByName = async (name: string, userId: string) => {
     })
 }
 
+const folderExist = async (folderID: string) => {
+    const result = await prismaClient.folder.findFirst({
+        where: {
+            folder_id: folderID
+        }
+    })
+
+    return !result == null
+}
+
 export type { Folder }
 export {
     createFolder,
@@ -110,5 +120,6 @@ export {
     getFolders,
     getItemsInFolder,
     moveFolder,
-    updateFolder
+    updateFolder,
+    folderExist
 }
