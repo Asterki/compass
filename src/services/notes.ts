@@ -5,30 +5,30 @@ import { prismaClient } from '@/lib/prisma'
 import { Folder } from './folders'
 
 interface Link {
-    id: string
-    links_to: string
-    label: string
-    note_id: string
+    id: string;
+        links_to: string;
+        label: string;
 }
 
 interface Attachment {
-    id: string
-    url: string
-    label: string
-    note_id: string
+    id: string;
+        url: string;
+        label: string;
+        note_id: string;
 }
 
 interface Note {
-    id: string
-    title: string
-    content: string
-    created_at: Date
+    id: string;
+    title: string;
+    content: string;
+    created_at: Date;
+    owner_id: string;
+    folder_id: string | null;
+    archived: boolean;
+    tags: string[];
 
-    owner_id: string
-    folder_id: string
-
-    attachments: Attachment[]
-    links: Link[]
+    attachments: Attachment[];
+    links: Link[];
 }
 
 const createNote = async (data: {

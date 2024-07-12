@@ -13,10 +13,6 @@ type ResponseData = {
 
 /**
  * Handles the deletion for a note by its ID.
- *
- * @param req - The NextApiRequest object.
- * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the note deletion.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
@@ -39,10 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
 
-        if (note) {
-            deleteNote(parsedBody.data.noteId)
-            return res.status(200).json({ message: 'Note deleted' })
-        }
+        deleteNote(parsedBody.data.noteId)
+        return res.status(200).json({ message: 'Note deleted' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }

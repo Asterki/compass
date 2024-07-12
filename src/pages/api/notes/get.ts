@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { updateNote, noteExists } from '@/services/notes'
+import { getNote, noteExists } from '@/services/notes'
 import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -9,14 +9,11 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
     message: string
+    note?: Note
 }
 
 /**
  * Handles the search for a note by its ID.
- *
- * @param req - The NextApiRequest object.
- * @param res - The NextApiResponse object.
- * @returns A JSON response indicating the success or failure of the note creation.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
@@ -25,9 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36),
-            title: z.string({}).min(1).max(34),
-            content: z.string({}).min(1).max(10000)
+            noteId: z.string().min(36).max(36)
         })
         .safeParse(req.body)
 
@@ -36,15 +31,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await noteExists(parsedBody.data.noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
+        const { noteId } = parsedBody.data
+
+        const noteExist = await noteExists(noteId)
+        if (!noteExist) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
 
         // Check if the note belongs to the user
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+        if (noteExist !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
 
         // Update the note
-        await updateNote(parsedBody.data.noteId, parsedBody.data.title, parsedBody.data.content)
-        return res.status(200).json({ message: 'Note updated' })
+        const note = await getNote(noteId)
+        // This should never happen since we already checked if the note exists
+        // but since typescript is a crybaby, we have to check again
+        if (!note) return res.status(404).json({ message: 'Note not found' }) 
+        return res.status(200).json({ message: 'Note updated', note })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }
