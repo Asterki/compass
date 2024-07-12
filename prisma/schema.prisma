@@ -102,10 +102,12 @@ model Note {
   folder_id   String? @map("folder_id")
   folder      Folder? @relation(fields: [folder_id], references: [id])
 
+  archived    Boolean
+  tags        String[]  
+
   attachments Attachments[]
   links       Link[]
 
-  tags        String[]
 
   @@map("notes")
 }
@@ -118,10 +120,10 @@ model Folder {
   
   owner_id    String  @map("owner_id")
   owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  tags        String[]
   
   notes       Note[]
 
-  tags        String[]
 
   @@map("folders")
 }

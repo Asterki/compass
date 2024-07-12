@@ -31,7 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 title: z.string({}).min(1).max(34),
                 content: z.string({}).min(1).max(10000),
                 tags: z.array(z.string().min(2).max(12)).max(5),
-                folderId: z.string({}).min(36).max(36)
+                folderId: z.string({}).min(36).max(36),
+                archived: z.boolean()
             })
         })
         .safeParse(req.body)
@@ -51,7 +52,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             parsedBody.data.noteId,
             parsedBody.data.data.title,
             parsedBody.data.data.content,
-            parsedBody.data.data.tags
+            parsedBody.data.data.tags,
+            parsedBody.data.data.archived
         )
 
         return res.status(200).json({ message: 'Note updated' })

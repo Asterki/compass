@@ -47,6 +47,8 @@ const createNote = async (data: {
             created_at: new Date(),
             owner_id: data.ownerId,
             folder_id: data.folderId,
+            tags: [''],
+            archived: false
         }
     })
 
@@ -99,7 +101,7 @@ const getNotes = async (folderId: string) => {
     return notes
 }
 
-const updateNote = async (noteId: string, title: string, content: string, tags: string[]) => {
+const updateNote = async (noteId: string, title: string, content: string, tags: string[], archived: boolean) => {
     await prismaClient.note.update({
         where: {
             id: noteId
@@ -107,10 +109,35 @@ const updateNote = async (noteId: string, title: string, content: string, tags: 
         data: {
             title,
             content,
-            tags
+            tags,
+            archived
+        }
+    })
+
+    return noteId
+}
+
+const findNotesByName = async (name: string, folderId: string) => {
+    const notes = await prismaClient.note.findMany({
+        where: {
+            title: name.toLowerCase(),
+            folder_id: folderId
+        }
+    })
+
+    return notes
+}
+
+const moveNote = async (noteId: string, folderId: string, newFolderId: string) => {
+    await prismaClient.note.update({
+        where: {
+            id: noteId
+        },
+        data: {
+            folder_id: newFolderId
         }
     })
 }
 
-export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists }
+export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists, findNotesByName, moveNote }
 export type { Note, Attachment, Link }
