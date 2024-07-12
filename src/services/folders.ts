@@ -5,9 +5,10 @@ import { prismaClient } from '@/lib/prisma'
 interface Folder {
     id: string
     name: string
-    folder_id: string
-    created_at: Date
     owner_id: string
+    folder_id: string | null
+    tags: string[]
+    created_at: Date
 }
 
 const createFolder = async (name: string, userId: string, parentFolderId?: string) => {

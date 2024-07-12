@@ -7,7 +7,13 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: string
+    message:
+        | 'Folder deleted'
+        | 'Folder not found'
+        | 'Invalid request body'
+        | 'Internal Server Error'
+        | 'Method Not Allowed'
+        | 'Unauthorized'
 }
 
 /**

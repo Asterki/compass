@@ -2,14 +2,21 @@ import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
 import { getFolder, folderExist } from '@/services/folders'
-import { Note } from '@/services/notes'
+import { Folder } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: string,
-    folder?: any
+    message:
+        | 'Note updated'
+        | 'Folder not found'
+        | 'Invalid request body'
+        | 'Internal Server Error'
+        | 'Method Not Allowed'
+        | 'Unauthorized'
+        | 'Note not found'
+    folder?: Folder
 }
 
 /**
@@ -41,8 +48,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         // Check if the folder belongs to the user
         if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
 
-        // Update the note
+        // Get the folder
         const folder = await getFolder(parsedBody.data.folderID)
+        if (!folder || folder == null) return res.status(404).json({ message: 'Folder not found' })
+            
         return res.status(200).json({ message: 'Note updated', folder })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })

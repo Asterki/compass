@@ -7,7 +7,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: string
+    message: 'Folders found' | 'Invalid request body' | 'Internal Server Error' | 'Method Not Allowed' | 'Unauthorized'
     folders?: {
         id: string
         name: string
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const userID = (session.user as any).id as string
         const folders = await findFoldersByName(parsedBody.data.folderName, userID)
 
-        const returnedFolders = folders.map((folder) => {
+        const returnedFolders = folders.map(folder => {
             return {
                 id: folder.id,
                 name: folder.name
