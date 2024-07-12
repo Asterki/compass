@@ -33,12 +33,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await folderExist(parsedBody.data.folderID)
-        if (!note) return res.status(404).json({ message: 'Folder not found' })
+        const folder = await folderExist(parsedBody.data.folderID)
+        if (!folder) return res.status(404).json({ message: 'Folder not found' })
 
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Folder not found' })
+        if (folder !== (session.user as any).id) return res.status(404).json({ message: 'Folder not found' })
 
-        if (note) {
+        if (folder) {
             deleteFolder(parsedBody.data.folderID)
             return res.status(200).json({ message: 'Folder deleted' })
         }
