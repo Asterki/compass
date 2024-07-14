@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteName: z.string({}).min(1).max(36)
+            noteName: z.string({}).min(1).max(36),
         })
         .safeParse(req.body)
 

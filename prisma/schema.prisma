@@ -114,7 +114,7 @@ model Note {
 model Folder {
     id               String   @id @default(cuid())
     name             String
-    parent_folder_id String   @map("folder_id") // Parent folder
+    parent_folder_id String?   @map("folder_id") // Parent folder
     created_at       DateTime @map("created_at")
 
     owner_id String   @map("owner_id")

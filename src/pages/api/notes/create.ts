@@ -22,9 +22,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            title: z.string({}).min(1).max(34),
+            title: z.string({}).min(1).max(36),
             content: z.string({}).min(1).max(10000),
-            parentFolderId: z.string({}).min(36).max(36)
+            parentFolderId: z.string({})
         })
         .safeParse(req.body)
 

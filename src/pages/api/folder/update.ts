@@ -26,9 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            folderId: z.string({}).min(36).max(36),
-            name: z.string({}).min(1).max(34),
-            newParentFolderId: z.string({}).min(36).max(36)
+            folderId: z.string({}).min(1).max(36),
+            name: z.string({}).min(1).max(36),
+            newParentFolderId: z.string({}).min(1).max(36),
         })
         .safeParse(req.body)
 

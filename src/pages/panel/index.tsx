@@ -33,7 +33,7 @@ const MainPage = () => {
                 body: JSON.stringify({
                     title: 'New Note',
                     content: 'This is a new note.',
-                    folderId: 'b408e206-c7e9-4d9e-82b8-27d486c77238',
+                    parentFolderId: `${(session as any).id}-rootfd`,
                 })
             })
 

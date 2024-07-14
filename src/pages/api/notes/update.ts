@@ -20,8 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36),
-            title: z.string({}).min(1).max(34),
+            noteId: z.string({}).min(1).max(36),
+            title: z.string({}).min(1).max(36),
             content: z.string({}).min(1).max(10000),
             tags: z.array(z.string().min(2).max(12)).max(5),
             archived: z.boolean()
