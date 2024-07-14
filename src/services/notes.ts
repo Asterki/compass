@@ -31,6 +31,11 @@ interface Note {
     links: Link[]
 }
 
+/**
+ * Creates a new note with the specified title, content, and folder ID.
+ * @param data The data to create the note with.
+ * @returns The ID of the created note.
+ */
 const createNote = async (data: {
     title: string
     content: string
@@ -47,13 +52,13 @@ const createNote = async (data: {
             tags: [''],
             archived: false,
             owner: {
-                connect: { id: data.ownerId },
+                connect: { id: data.ownerId }
             },
             folder: {
                 connect: {
-                    id: data.folderId,
-                },
-            },
+                    id: data.folderId
+                }
+            }
         },
         select: {
             id: true
@@ -63,14 +68,27 @@ const createNote = async (data: {
     return noteID.id
 }
 
-const deleteNote = (noteId: string) => {
-    prismaClient.note.delete({
+/**
+ * Deletes a note with the specified noteId.
+ * @param noteId The ID of the note to delete.
+ * @returns True if the note was deleted, false otherwise.
+ */
+const deleteNote = async (noteId: string) => {
+    const result = await prismaClient.note.delete({
         where: {
             id: noteId
         }
     })
+
+    if (result) return true
+    return false
 }
 
+/**
+ * Retrieves a note by its ID.
+ * @param noteId The ID of the note to retrieve.
+ * @returns The note if it exists, null otherwise.
+ */
 const getNote = async (noteId: string) => {
     const note = await prismaClient.note.findUnique({
         where: {
@@ -85,6 +103,11 @@ const getNote = async (noteId: string) => {
     return note
 }
 
+/**
+ * Checks if a note with the specified noteId exists.
+ * @param noteId The ID of the note to check.
+ * @returns The owner ID of the note if it exists, false otherwise.
+ */
 const noteExists = async (noteId: string) => {
     const note = await prismaClient.note.findUnique({
         where: {
@@ -99,53 +122,66 @@ const noteExists = async (noteId: string) => {
     return note.owner_id
 }
 
-const getNotes = async (folderId: string) => {
-    const notes = await prismaClient.note.findMany({
-        where: {
-            folder_id: folderId
-        }
-    })
-
-    return notes
-}
-
-const updateNote = async (noteId: string, title: string, content: string, tags: string[], archived: boolean) => {
-    await prismaClient.note.update({
+/**
+ * Retrieves notes owned by a specific user.
+ * @param userId The ID of the user to retrieve notes for.
+ * @returns An array of notes owned by the user.
+ */
+const updateNote = async (
+    noteId: string,
+    data: { title: string; content: string; tags: string[]; archived: boolean }
+) => {
+    const result = await prismaClient.note.update({
         where: {
             id: noteId
         },
         data: {
-            title,
-            content,
-            tags,
-            archived
+            title: data.title,
+            content: data.content,
+            tags: data.tags,
+            archived: data.archived
         }
     })
 
-    return noteId
+    return result
 }
 
-const findNotesByName = async (name: string, folderId: string) => {
+/**
+ * Retrieves notes owned by a specific user.
+ * @param userId The ID of the user to retrieve notes for.
+ * @returns An array of notes owned by the user.
+ */
+const findNotesByName = async (name: string) => {
     const notes = await prismaClient.note.findMany({
         where: {
-            title: name.toLowerCase(),
-            folder_id: folderId
+            title: {
+                contains: name,
+                mode: 'insensitive'
+            },
         }
     })
 
     return notes
 }
 
+/**
+ * Retrieves notes owned by a specific user.
+ * @param userId The ID of the user to retrieve notes for.
+ * @returns An array of notes owned by the user.
+ */
 const moveNote = async (noteId: string, folderId: string, newFolderId: string) => {
-    await prismaClient.note.update({
+    const result = await prismaClient.note.update({
         where: {
             id: noteId
         },
         data: {
-            folder_id: newFolderId
+            parent_folder_id: newFolderId
         }
     })
+
+    if (result) return true
+    return false
 }
 
-export { createNote, deleteNote, getNote, getNotes, updateNote, noteExists, findNotesByName, moveNote }
+export { createNote, deleteNote, getNote, updateNote, noteExists, findNotesByName, moveNote }
 export type { Note, Attachment, Link }
