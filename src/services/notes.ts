@@ -5,30 +5,30 @@ import { prismaClient } from '@/lib/prisma'
 import { Folder } from './folders'
 
 interface Link {
-    id: string;
-        links_to: string;
-        label: string;
+    id: string
+    links_to: string
+    label: string
 }
 
 interface Attachment {
-    id: string;
-        url: string;
-        label: string;
-        note_id: string;
+    id: string
+    url: string
+    label: string
+    note_id: string
 }
 
 interface Note {
-    id: string;
-    title: string;
-    content: string;
-    created_at: Date;
-    owner_id: string;
-    folder_id: string | null;
-    archived: boolean;
-    tags: string[];
+    id: string
+    title: string
+    content: string
+    created_at: Date
+    owner_id: string
+    folder_id: string | null
+    archived: boolean
+    tags: string[]
 
-    attachments: Attachment[];
-    links: Link[];
+    attachments: Attachment[]
+    links: Link[]
 }
 
 const createNote = async (data: {
@@ -37,22 +37,30 @@ const createNote = async (data: {
     folderId: string
     ownerId: string
 }): Promise<string> => {
-    const noteID = uuidv4()
+    console.log(data)
 
-    prismaClient.note.create({
+    let noteID = await prismaClient.note.create({
         data: {
-            id: noteID,
             title: data.title,
             content: data.content,
             created_at: new Date(),
-            owner_id: data.ownerId,
-            folder_id: data.folderId,
             tags: [''],
-            archived: false
+            archived: false,
+            owner: {
+                connect: { id: data.ownerId },
+            },
+            folder: {
+                connect: {
+                    id: data.folderId,
+                },
+            },
+        },
+        select: {
+            id: true
         }
     })
 
-    return noteID
+    return noteID.id
 }
 
 const deleteNote = (noteId: string) => {

@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         if (!note) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
 
         // Check if the note belongs to the user
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+        if (note !== (session as any).id) return res.status(404).json({ message: 'Note not found' })
 
         // Update the note
         await updateNote(noteId, title, content, tags, archived)

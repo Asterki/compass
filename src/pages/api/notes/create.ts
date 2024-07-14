@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         .object({
             title: z.string({}).min(1).max(34),
             content: z.string({}).min(1).max(10000),
-            folderId: z.string({}).min(36).max(36)
+            folderId: z.string({}).min(36).max(36).optional()
         })
         .safeParse(req.body)
 
@@ -32,17 +32,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        let userID = (session.user as any).id as string
+        let userID = (session as any).id as string
 
         let noteID = await createNote({
             title: parsedBody.data.title,
             content: parsedBody.data.content,
-            folderId: parsedBody.data.folderId,
+            folderId: parsedBody.data.folderId ? parsedBody.data.folderId : "parent",
             ownerId: userID
         })
 
         return res.status(200).json({ message: 'Note created', noteID })
     } catch (error) {
+        console.error('Error creating note:', error)
         return res.status(500).json({ message: 'Internal Server Error' })
     }
 }
