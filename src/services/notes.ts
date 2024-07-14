@@ -1,8 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
-
 import { prismaClient } from '@/lib/prisma'
-
-import { Folder } from './folders'
 
 interface Link {
     id: string
@@ -23,7 +19,7 @@ interface Note {
     content: string
     created_at: Date
     owner_id: string
-    folder_id: string | null
+    parent_folder_id: string
     archived: boolean
     tags: string[]
 
@@ -104,25 +100,6 @@ const getNote = async (noteId: string) => {
 }
 
 /**
- * Checks if a note with the specified noteId exists.
- * @param noteId The ID of the note to check.
- * @returns The owner ID of the note if it exists, false otherwise.
- */
-const noteExists = async (noteId: string) => {
-    const note = await prismaClient.note.findUnique({
-        where: {
-            id: noteId
-        },
-        select: {
-            owner_id: true
-        }
-    })
-
-    if (!note) return false
-    return note.owner_id
-}
-
-/**
  * Retrieves notes owned by a specific user.
  * @param userId The ID of the user to retrieve notes for.
  * @returns An array of notes owned by the user.
@@ -151,13 +128,14 @@ const updateNote = async (
  * @param userId The ID of the user to retrieve notes for.
  * @returns An array of notes owned by the user.
  */
-const findNotesByName = async (name: string) => {
+const findNotesByName = async (name: string, ownerId: string) => {
     const notes = await prismaClient.note.findMany({
         where: {
             title: {
                 contains: name,
                 mode: 'insensitive'
             },
+            owner_id: ownerId
         }
     })
 
@@ -169,13 +147,14 @@ const findNotesByName = async (name: string) => {
  * @param userId The ID of the user to retrieve notes for.
  * @returns An array of notes owned by the user.
  */
-const moveNote = async (noteId: string, folderId: string, newFolderId: string) => {
+const moveNote = async (noteId: string, parentFolderId: string, newParentFolderId: string) => {
     const result = await prismaClient.note.update({
         where: {
-            id: noteId
+            id: noteId,
+            parent_folder_id: parentFolderId
         },
         data: {
-            parent_folder_id: newFolderId
+            parent_folder_id: newParentFolderId
         }
     })
 
@@ -183,5 +162,24 @@ const moveNote = async (noteId: string, folderId: string, newFolderId: string) =
     return false
 }
 
-export { createNote, deleteNote, getNote, updateNote, noteExists, findNotesByName, moveNote }
+/**
+ * Finds the folders with the specified tag owned by a specific user.
+ * @param tag The tag of the folder to find.
+ * @param userId The ID of the user to find the folder for.
+ * @returns An array of folders with the specified tag.
+ */
+const findNotesByTag = async (tag: string, userId: string) => {
+    const result = await prismaClient.note.findMany({
+        where: {
+            tags: {
+                has: tag
+            },
+            owner_id: userId
+        }
+    })
+
+    return result
+}
+
+export { createNote, deleteNote, getNote, updateNote, findNotesByName, moveNote, findNotesByTag }
 export type { Note, Attachment, Link }

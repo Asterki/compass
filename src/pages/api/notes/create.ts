@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         .object({
             title: z.string({}).min(1).max(34),
             content: z.string({}).min(1).max(10000),
-            parent_folder_id: z.string({}).min(36).max(36)
+            parentFolderId: z.string({}).min(36).max(36)
         })
         .safeParse(req.body)
 
@@ -33,14 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const { title, content, parent_folder_id } = parsedBody.data
-        const userID = (session as any).id as string
+        const { title, content, parentFolderId } = parsedBody.data
+        const userId = (session as any).id as string
 
         const noteID = await createNote({
             title: title,
             content: content,
-            folderId: parent_folder_id,
-            ownerId: userID
+            folderId: parentFolderId,
+            ownerId: userId
         })
 
         return res.status(200).json({ message: 'Note created', noteID })

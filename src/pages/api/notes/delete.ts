@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
 import { deleteNote, getNote } from '@/services/notes'
-import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -30,11 +29,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        const userId = (session as any).id as string
         const { noteId } = parsedBody.data
 
         // Check if the note exists and if the user owns it
         const note = await getNote(noteId)
-        if (!note || note.owner_id !== (session as any).id) return res.status(404).json({ message: 'Note not found' })
+        if (!note || note.owner_id !== userId) return res.status(404).json({ message: 'Note not found' })
 
         // Delete the note
         const result = await deleteNote(noteId)

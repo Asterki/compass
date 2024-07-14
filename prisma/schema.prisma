@@ -99,8 +99,8 @@ model Note {
     owner_id String @map("owner_id")
     owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
 
-    parent_folder_id String? @map("parent_folder_id")
-    folder           Folder? @relation(fields: [parent_folder_id], references: [id])
+    parent_folder_id String @map("parent_folder_id")
+    folder           Folder @relation(fields: [parent_folder_id], references: [id])
 
     archived Boolean
     tags     String[]
@@ -114,7 +114,7 @@ model Note {
 model Folder {
     id               String   @id @default(cuid())
     name             String
-    parent_folder_id String?  @map("folder_id") // Parent folder
+    parent_folder_id String   @map("folder_id") // Parent folder
     created_at       DateTime @map("created_at")
 
     owner_id String   @map("owner_id")

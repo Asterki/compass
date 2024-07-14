@@ -33,10 +33,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        const userId = (session as any).id as string
         const { noteId, title, content, tags, archived } = parsedBody.data
 
         const note = await getNote(noteId)
-        if (!note || note.owner_id !== (session as any).id) return res.status(404).json({ message: 'Note not found' })
+        if (!note || note.owner_id !== userId) return res.status(404).json({ message: 'Note not found' })
 
         // Update the note
         await updateNote(noteId, { title, content, tags, archived })

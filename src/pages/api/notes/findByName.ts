@@ -1,16 +1,20 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { findFoldersByName } from '@/services/folders'
+import { findNotesByName } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 type ResponseData = {
-    message: 'Folders found' | 'Invalid request body' | 'Internal Server Error' | 'Method Not Allowed' | 'Unauthorized'
-    folders?: {
+    message: 'Notes found' | 'Invalid request body' | 'Internal Server Error' | 'Method Not Allowed' | 'Unauthorized'
+    notes?: {
         id: string
         name: string
+        created_at: Date
+        parent_folder_id: string
+        tags: string[]
+        archived: boolean
     }[]
 }
 
@@ -24,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            folderName: z.string({}).min(1).max(36)
+            noteName: z.string({}).min(1).max(36)
         })
         .safeParse(req.body)
 
@@ -33,17 +37,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const userID = (session.user as any).id as string
-        const folders = await findFoldersByName(parsedBody.data.folderName, userID)
+        const userId = (session as any).id as string
+        const notes = await findNotesByName(parsedBody.data.noteName, userId)
 
-        const returnedFolders = folders.map(folder => {
+        const returnedNotes = notes.map(note => {
             return {
-                id: folder.id,
-                name: folder.name
+                id: note.id,
+                name: note.title,
+                created_at: note.created_at,
+                parent_folder_id: note.parent_folder_id,
+                tags: note.tags,
+                archived: note.archived,
             }
         })
 
-        return res.status(200).json({ message: 'Folders found', folders: returnedFolders })
+        return res.status(200).json({ message: 'Notes found', notes: returnedNotes })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }

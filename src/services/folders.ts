@@ -130,16 +130,20 @@ const findFoldersByName = (name: string, userId: string): Promise<Folder[]> => {
 }
 
 /**
- * Returns the owner ID of the folder with the specified folder ID, or false if the folder does not exist.
- * @param folderID The ID of the folder to check.
- * @returns The owner ID of the folder, or false if the folder does not exist.
+ * Finds the folders with the specified tag owned by a specific user.
+ * @param tag The tag of the folder to find.
+ * @param userId The ID of the user to find the folder for.
+ * @returns An array of folders with the specified tag.
  */
-const folderExist = async (folderID: string): Promise<string | false> => {
-    const folder = await prismaClient.folder.findFirst({
-        where: { id: folderID },
-        select: { owner_id: true }
+const findFoldersByTag = async (tag: string, userId: string): Promise<Folder[]> => {
+    return await prismaClient.folder.findMany({
+        where: {
+            tags: {
+                has: tag
+            },
+            owner_id: userId
+        }
     })
-    return folder ? folder.owner_id : false
 }
 
 export type { Folder }
@@ -151,5 +155,5 @@ export {
     getItemsInFolder,
     updateFolder,
     findFoldersByName,
-    folderExist
+    findFoldersByTag
 }

@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const parsedBody = z
         .object({
             name: z.string({}).min(1).max(34),
-            parentFolder: z.string().min(36).max(36).optional()
+            parentFolderId: z.string().min(36).max(36).optional()
         })
         .safeParse(req.body)
 
@@ -32,10 +32,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        // Main logic
-        let userID = (session.user as any).id as string
+        const userId = (session as any).id as string
+        const { name, parentFolderId } = parsedBody.data
 
-        let folderID = await createFolder(parsedBody.data.name, userID, parsedBody.data.parentFolder)
+        const folderID = await createFolder({ name: name, parentFolderId: parentFolderId, userId: userId })
         return res.status(200).json({ message: 'Folder created', folderID })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
