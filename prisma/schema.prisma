@@ -94,7 +94,7 @@ model Note {
   id          String  @id @default(cuid())
   title       String
   content     String
-  created_at  DateTime @map("created_at")
+  created_at  DateTime @map("created_at") 
   
   owner_id    String  @map("owner_id")
   owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
