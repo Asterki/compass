@@ -1,129 +1,127 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRESQL_URI")
+    provider = "postgresql"
+    url      = env("POSTGRESQL_URI")
 }
 
 // Account related
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @map("user_id")
-  type              String
-  provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique @map("session_token")
-  userId       String   @map("user_id")
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("sessions")
+    @@map("sessions")
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?    @map("email_verified")
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  preferences   preferences?
-  Note          Note[]
-  Folder        Folder[]
+    id            String       @id @default(cuid())
+    name          String?
+    email         String?      @unique
+    emailVerified DateTime?    @map("email_verified")
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    preferences   preferences?
+    Note          Note[]
+    Folder        Folder[]
 
-  @@map("users")
+    @@map("users")
 }
 
 model preferences {
-  user_id         String    @unique
-  last_login      DateTime?
-  account_created DateTime
-  user            User      @relation(fields: [user_id], references: [id])
+    user_id         String    @unique
+    last_login      DateTime?
+    account_created DateTime
+    user            User      @relation(fields: [user_id], references: [id])
 }
 
 model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+    identifier String
+    token      String   @unique
+    expires    DateTime
 
-  @@unique([identifier, token])
-  @@map("verification_tokens")
+    @@unique([identifier, token])
+    @@map("verification_tokens")
 }
 
 model Attachments {
-  id          String  @id @default(cuid())
-  url         String
-  label        String
+    id    String @id @default(cuid())
+    url   String
+    label String
 
-  note_id     String  @map("note_id")
-  note       Note    @relation(fields: [note_id], references: [id], onDelete: Cascade)
-  
-  @@map("attachments")
+    note_id String @map("note_id")
+    note    Note   @relation(fields: [note_id], references: [id], onDelete: Cascade)
+
+    @@map("attachments")
 }
 
 model Link {
-  id          String  @id @default(cuid())
-  links_to     String  @map("note_id")
-  label       String
+    id       String @id @default(cuid())
+    links_to String @map("note_id")
+    label    String
 
-  note       Note    @relation(fields: [links_to], references: [id], onDelete: Cascade)
-  
-  @@map("links")
+    note Note @relation(fields: [links_to], references: [id], onDelete: Cascade)
+
+    @@map("links")
 }
 
 model Note {
-  id          String  @id @default(cuid())
-  title       String
-  content     String
-  created_at  DateTime @map("created_at") 
-  
-  owner_id    String  @map("owner_id")
-  owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+    id         String   @id @default(cuid())
+    title      String
+    content    String
+    created_at DateTime @map("created_at")
 
-  folder_id   String? @map("folder_id")
-  folder      Folder? @relation(fields: [folder_id], references: [id])
+    owner_id String @map("owner_id")
+    owner    User   @relation(fields: [owner_id], references: [id], onDelete: Cascade)
 
-  archived    Boolean
-  tags        String[]  
+    parent_folder_id String? @map("parent_folder_id")
+    folder           Folder? @relation(fields: [parent_folder_id], references: [id])
 
-  attachments Attachments[]
-  links       Link[]
+    archived Boolean
+    tags     String[]
 
+    attachments Attachments[]
+    links       Link[]
 
-  @@map("notes")
+    @@map("notes")
 }
 
 model Folder {
-  id          String  @id @default(cuid())
-  name        String
-  folder_id   String? @map("folder_id")
-  created_at  DateTime @map("created_at")
-  
-  owner_id    String  @map("owner_id")
-  owner       User    @relation(fields: [owner_id], references: [id], onDelete: Cascade)
-  tags        String[]
-  
-  notes       Note[]
+    id               String   @id @default(cuid())
+    name             String
+    parent_folder_id String?  @map("folder_id") // Parent folder
+    created_at       DateTime @map("created_at")
 
+    owner_id String   @map("owner_id")
+    owner    User     @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+    tags     String[]
 
-  @@map("folders")
+    notes Note[]
+
+    @@map("folders")
 }
