@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { findNotesByName } from '@/services/notes'
+import { findNotesByTag } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     try {
         const userId = (session.user as any).id as string
-        const notes = await findNotesByName(parsedBody.data.tag, userId)
+        const notes = await findNotesByTag(parsedBody.data.tag, userId)
 
         const returnedNotes = notes.map(note => {
             return {

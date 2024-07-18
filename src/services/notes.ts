@@ -38,8 +38,6 @@ const createNote = async (data: {
     folderId: string
     ownerId: string
 }): Promise<string> => {
-    console.log(data)
-
     let noteID = await prismaClient.note.create({
         data: {
             title: data.title,

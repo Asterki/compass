@@ -25,15 +25,15 @@ const MainPage = () => {
     
     const createNewNote = async () => {
         try {
-            const response = await fetch('/api/notes/create', {
+            const response = await fetch('/api/folder/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    title: 'New Note',
-                    content: 'This is a new note.',
-                    parentFolderId: `${(session as any).id}-rootfd`,
+                    folderId: "clyqkoji20001yg5rididsg9t",
+                    name: "New FOlder name",
+                    newParentFolderId: "clym2jic700017mrfefzhw3tw-rootfd"
                 })
             })
 
@@ -41,7 +41,7 @@ const MainPage = () => {
                 const responseBody = await response.json() 
                 console.log(responseBody)
 
-                router.push(`/panel/notes/${responseBody.noteID}`) 
+                // router.push(`/panel/notes/${responseBody.noteID}`) 
             } else {
                 const errorBody = await response.json() 
                 console.error('Error response:', errorBody)
