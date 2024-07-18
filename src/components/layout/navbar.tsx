@@ -29,7 +29,7 @@ const NavbarComponent: NextPage<NavbarProps> = (props) => {
                             <Link
                                 className="font-semibold text-purple-400"
                                 target="_blank"
-                                href="https://github.com/Asterki/classcompass"
+                                href="https://github.com/Asterki/Compass"
                             >
                                 Open Source
                             </Link>

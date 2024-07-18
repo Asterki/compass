@@ -22,7 +22,7 @@ const SignUpPage = ({ providers }: InferGetServerSidePropsType<typeof getServerS
             className={`flex min-h-screen flex-col items-center justify-center ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <div className="w-11/12 text-center lg:w-3/12">
-                <h1 className="text-3xl font-semibold">Register to ClassCompass</h1>
+                <h1 className="text-3xl font-semibold">Register to Compass</h1>
                 <p>Select a sign-in method</p>
 
                 <div className="mt-4 flex flex-col gap-4">
