@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { getNote, noteExists } from '@/services/notes'
+import { getNote } from '@/services/notes'
 import { Note } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string().min(36).max(36)
+            noteId: z.string().min(1).max(36),
         })
         .safeParse(req.body)
 
@@ -31,19 +31,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        const userId = (session as any).id as string
         const { noteId } = parsedBody.data
 
-        const noteExist = await noteExists(noteId)
-        if (!noteExist) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
+        // Get the note
+        const note = (await getNote(noteId)) as unknown as Note
+        if (!note || note.owner_id !== userId) return res.status(404).json({ message: 'Note not found' })
 
-        // Check if the note belongs to the user
-        if (noteExist !== (session as any).id) return res.status(404).json({ message: 'Note not found' })
-
-        // Update the note
-        const note = await getNote(noteId)
-        // This should never happen since we already checked if the note exists
-        // but since typescript is a crybaby, we have to check again
-        if (!note) return res.status(404).json({ message: 'Note not found' }) 
         return res.status(200).json({ message: 'Note found', note })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })

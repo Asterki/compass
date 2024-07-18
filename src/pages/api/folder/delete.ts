@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { deleteFolder, folderExist } from '@/services/folders'
+import { deleteFolder, getFolder } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            folderID: z.string({}).min(36).max(36)
+            folderId: z.string({}).min(1).max(36),
         })
         .safeParse(req.body)
 
@@ -35,15 +35,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const folder = await folderExist(parsedBody.data.folderID)
-        if (!folder) return res.status(404).json({ message: 'Folder not found' })
+        const folderId = parsedBody.data.folderId
+        const userId = (session as any).id as string
 
-        if (folder !== (session.user as any).id) return res.status(404).json({ message: 'Folder not found' })
+        const folder = await getFolder(folderId)
+        if (!folder || folder.owner_id !== userId)
+            return res.status(404).json({ message: 'Folder not found' })
 
-        if (folder) {
-            deleteFolder(parsedBody.data.folderID)
-            return res.status(200).json({ message: 'Folder deleted' })
-        }
+        deleteFolder(folderId)
+        return res.status(200).json({ message: 'Folder deleted' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })
     }

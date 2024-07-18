@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { deleteNote, noteExists } from '@/services/notes'
-import { Note } from '@/services/notes'
+import { deleteNote, getNote } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -21,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36)
+            noteId: z.string({}).min(1).max(36),
         })
         .safeParse(req.body)
 
@@ -30,12 +29,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const note = await noteExists(parsedBody.data.noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' })
+        const userId = (session as any).id as string
+        const { noteId } = parsedBody.data
 
-        if (note !== (session.user as any).id) return res.status(404).json({ message: 'Note not found' })
+        // Check if the note exists and if the user owns it
+        const note = await getNote(noteId)
+        if (!note || note.owner_id !== userId) return res.status(404).json({ message: 'Note not found' })
 
-        deleteNote(parsedBody.data.noteId)
+        // Delete the note
+        const result = await deleteNote(noteId)
+
+        // Return the result
+        if (!result) return res.status(500).json({ message: 'Failed to delete note' })
         return res.status(200).json({ message: 'Note deleted' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })

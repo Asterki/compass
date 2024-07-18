@@ -13,6 +13,7 @@ type ResponseData = {
 
 /**
  * Handles the creation of a new note.
+ * 
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ResponseData>) {
     if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' })
@@ -21,9 +22,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            title: z.string({}).min(1).max(34),
+            title: z.string({}).min(1).max(36),
             content: z.string({}).min(1).max(10000),
-            folderId: z.string({}).min(36).max(36).optional()
+            parentFolderId: z.string({})
         })
         .safeParse(req.body)
 
@@ -32,13 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        let userID = (session as any).id as string
+        const { title, content, parentFolderId } = parsedBody.data
+        const userId = (session as any).id as string
 
-        let noteID = await createNote({
-            title: parsedBody.data.title,
-            content: parsedBody.data.content,
-            folderId: parsedBody.data.folderId ? parsedBody.data.folderId : "parent",
-            ownerId: userID
+        const noteID = await createNote({
+            title: title,
+            content: content,
+            folderId: parentFolderId,
+            ownerId: userId
         })
 
         return res.status(200).json({ message: 'Note created', noteID })
