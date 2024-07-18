@@ -25,14 +25,15 @@ const MainPage = () => {
     
     const createNewNote = async () => {
         try {
-            const response = await fetch('/api/notes/create', {
+            const response = await fetch('/api/folder/update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    title: 'New Note',
-                    content: 'This is a new note.'
+                    folderId: "clyqkoji20001yg5rididsg9t",
+                    name: "New FOlder name",
+                    newParentFolderId: "clym2jic700017mrfefzhw3tw-rootfd"
                 })
             })
 
@@ -40,7 +41,7 @@ const MainPage = () => {
                 const responseBody = await response.json() 
                 console.log(responseBody)
 
-                router.push(`/panel/notes/${responseBody.noteID}`) 
+                // router.push(`/panel/notes/${responseBody.noteID}`) 
             } else {
                 const errorBody = await response.json() 
                 console.error('Error response:', errorBody)
@@ -55,7 +56,7 @@ const MainPage = () => {
             className={`flex min-h-screen w-full flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <Head>
-                <title>Dashboard | ClassCompass</title>
+                <title>Dashboard | Compass</title>
             </Head>
 
             {status == 'loading' && 'Loading...'}

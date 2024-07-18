@@ -1,8 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { updateNote, noteExists } from '@/services/notes'
-import { Note } from '@/services/notes'
+import { updateNote, getNote } from '@/services/notes'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -21,8 +20,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            noteId: z.string({}).min(36).max(36),
-            title: z.string({}).min(1).max(34),
+            noteId: z.string({}).min(1).max(36),
+            title: z.string({}).min(1).max(36),
             content: z.string({}).min(1).max(10000),
             tags: z.array(z.string().min(2).max(12)).max(5),
             archived: z.boolean()
@@ -34,16 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        const userId = (session as any).id as string
         const { noteId, title, content, tags, archived } = parsedBody.data
 
-        const note = await noteExists(noteId)
-        if (!note) return res.status(404).json({ message: 'Note not found' }) // Check if the note exists
-
-        // Check if the note belongs to the user
-        if (note !== (session as any).id) return res.status(404).json({ message: 'Note not found' })
+        const note = await getNote(noteId)
+        if (!note || note.owner_id !== userId) return res.status(404).json({ message: 'Note not found' })
 
         // Update the note
-        await updateNote(noteId, title, content, tags, archived)
+        await updateNote(noteId, { title, content, tags, archived })
         return res.status(200).json({ message: 'Note updated' })
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' })

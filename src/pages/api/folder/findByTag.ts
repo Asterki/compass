@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { findFoldersByName } from '@/services/folders'
+import { findFoldersByTag } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const parsedBody = z
         .object({
-            folderName: z.string({}).min(1).max(36)
+            tag: z.string({}).min(1).max(12)
         })
         .safeParse(req.body)
 
@@ -33,13 +33,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-        const userID = (session.user as any).id as string
-        const folders = await findFoldersByName(parsedBody.data.folderName, userID)
+        const userId = (session.user as any).id as string
+        const folders = await findFoldersByTag(parsedBody.data.tag, userId)
 
         const returnedFolders = folders.map(folder => {
             return {
                 id: folder.id,
-                name: folder.name
+                name: folder.name,
+                created_at: folder.created_at,
+                parent_folder_id: folder.parent_folder_id,
+                tags: folder.tags,
             }
         })
 
