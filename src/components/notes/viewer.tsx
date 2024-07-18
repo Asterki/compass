@@ -2,28 +2,9 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 
-interface Note {
-    note: {
-        title: string
-        content: string
-        createdAt: string
-        updatedAt: string
-        folder: string
-        user: string
-        tags: string[]
-        attachments: {
-            name: string
-            type: string
-            url: string
-        }[]
-        links: {
-            linkID: string
-            url: string
-        }[]
-    }
-}
+import type { Note } from '@/services/notes'
 
-const NoteViewer: React.FC<Note> = props => {
+const NoteViewer: React.FC<{ note: Note}> = props => {
     return (
         <Markdown
             remarkPlugins={[remarkGfm, remarkBreaks]}
