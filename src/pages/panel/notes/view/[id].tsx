@@ -72,6 +72,9 @@ const ViewNoteById = () => {
                     <NavbarComponent session={session} />
 
                     {note !== null && <NoteViewer note={note as Note} />}
+
+                    ewq
+
                     <h1>The requested note ID is: {params.id}</h1>
                 </main>
             )}
