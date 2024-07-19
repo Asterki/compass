@@ -25,6 +25,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 import { Note } from '@/services/notes'
+import Button from '@/components/button'
 
 const NotesEditPage = () => {
     const router = useRouter()
@@ -68,6 +69,36 @@ const NotesEditPage = () => {
 
             editor.focus()
             setEditorContent(editor.value)
+        }
+    }
+
+    const updateNote = async () => {
+        if (status == 'authenticated') {
+            try {
+                const response = await fetch('/api/notes/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        noteId: params.id,
+                        title: 'Test Note',
+                        tags: [],
+                        content: editorContent,
+                        archived: false
+                    })
+                })
+
+                if (response.ok) {
+                    const responseBody = await response.json()
+                    console.log(responseBody.note)
+                } else {
+                    const errorBody = await response.json()
+                    console.error('Error response:', errorBody)
+                }
+            } catch (error) {
+                console.error('Fetch error:', error)
+            }
         }
     }
 
@@ -123,6 +154,8 @@ const NotesEditPage = () => {
             {status == 'authenticated' && session.user !== undefined && (
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
+
+                    <Button variant='secondary' onClick={updateNote}>Save</Button>
 
                     <div className="flex w-full items-start justify-between">
                         <div className="flex w-1/2 gap-2 p-4">
