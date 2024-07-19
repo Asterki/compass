@@ -91,7 +91,38 @@ const NotesEditPage = () => {
 
                 if (response.ok) {
                     const responseBody = await response.json()
-                    console.log(responseBody.note)
+
+                    if (responseBody.message == 'Note updated') {
+                        console.log('Note updated') // TODO show a toast
+                    }
+                } else {
+                    const errorBody = await response.json()
+                    console.error('Error response:', errorBody)
+                }
+            } catch (error) {
+                console.error('Fetch error:', error)
+            }
+        }
+    }
+
+    const deleteNote = async () => {
+        if (status == 'authenticated') {
+            try {
+                const response = await fetch('/api/notes/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        noteId: params.id
+                    })
+                })
+
+                if (response.ok) {
+                    const responseBody = await response.json()
+                    if (responseBody.message == 'Note deleted') {
+                        router.push('/panel/notes')
+                    }
                 } else {
                     const errorBody = await response.json()
                     console.error('Error response:', errorBody)
@@ -133,6 +164,10 @@ const NotesEditPage = () => {
                     } else {
                         const errorBody = await response.json()
                         console.error('Error response:', errorBody)
+
+                        if (errorBody.message == 'Note not found') {
+                            router.push('/panel/notes')
+                        }
                     }
                 } catch (error) {
                     console.error('Fetch error:', error)
@@ -155,7 +190,14 @@ const NotesEditPage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    <Button variant='secondary' onClick={updateNote}>Save</Button>
+                    <div className="flex items-center justify-center gap-2">
+                        <Button variant="secondary" onClick={updateNote}>
+                            Save
+                        </Button>
+                        <Button variant="destructive" onClick={deleteNote}>
+                            Delete
+                        </Button>
+                    </div>
 
                     <div className="flex w-full items-start justify-between">
                         <div className="flex w-1/2 gap-2 p-4">
