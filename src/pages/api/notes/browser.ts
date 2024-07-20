@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
 import { getNote } from '@/services/notes'
-import { getFolder, getRootFolder, getItemsInFolder } from '@/services/folders'
+import { getFolder, getItemsInFolder } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
@@ -42,6 +42,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        // CHeck if the folder exists and it's owned by the user
+        const folderExist = await getFolder(parsedBody.data.parentFolderId)
+        if (!folderExist) return res.status(404).json({ message: 'Folder not found' })
+        if (folderExist!.owner_id !== (session as any).id) return res.status(404).json({ message: 'Folder not found' })
+
         const folder = await getItemsInFolder(parsedBody.data.parentFolderId)
         return res.status(200).json({ message: 'Note browser', result: folder })
     } catch (error) {

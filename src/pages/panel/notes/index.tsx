@@ -52,7 +52,11 @@ const NotesIndex = () => {
 
             {status == 'loading' && 'Loading...'}
 
-            {status == 'authenticated' && session.user !== undefined && <h1>Here will be the note browser</h1>}
+            {status == 'authenticated' && session.user !== undefined && (
+                <main className="flex w-full flex-col items-center justify-between">
+                    <h1>ejwioq</h1>
+                </main>
+            )}
         </div>
     )
 }
