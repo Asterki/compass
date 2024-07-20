@@ -4,11 +4,15 @@ import Head from 'next/head'
 import NavbarComponent from '@/components/layout/navbar'
 import Button from '@/components/button'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFolder, faNoteSticky, faStickyNote } from '@fortawesome/free-solid-svg-icons'
+
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 /**
  * The main page component.
@@ -22,34 +26,6 @@ const MainPage = () => {
             router.push('/auth/access')
         }
     })
-    
-    const createNewNote = async () => {
-        try {
-            const response = await fetch('/api/notes/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    parentFolderId: "clyqkoji20001yg5rididsg9t",
-                    title: 'New note',
-                    content: 'This is a new note'
-                })
-            })
-
-            if (response.ok) {
-                const responseBody = await response.json() 
-                console.log(responseBody)
-
-                // router.push(`/panel/notes/${responseBody.noteID}`) 
-            } else {
-                const errorBody = await response.json() 
-                console.error('Error response:', errorBody)
-            }
-        } catch (error) {
-            console.error('Fetch error:', error)
-        }
-    }
 
     return (
         <div
@@ -65,14 +41,14 @@ const MainPage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    <section>
-                        <Button variant="primary" className="">
-                            Go to the Marketplace
-                        </Button>
-
-                        <Button variant="success" onClick={() => createNewNote()}>
-                            Create note
-                        </Button>
+                    <section className="p-4">
+                        <Link
+                            href={'/panel/notes/browse'}
+                            className="flex cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-white transition-all hover:scale-105"
+                        >
+                            <FontAwesomeIcon icon={faStickyNote} className="fill-white text-8xl" />
+                            <h1 className="text-xl font-bold">Notes</h1>
+                        </Link>
                     </section>
                 </main>
             )}
