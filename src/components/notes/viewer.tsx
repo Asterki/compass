@@ -2,33 +2,15 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkBreaks from 'remark-breaks'
 
-interface Note {
-    note: {
-        title: string
-        content: string
-        createdAt: string
-        updatedAt: string
-        folder: string
-        user: string
-        tags: string[]
-        attachments: {
-            name: string
-            type: string
-            url: string
-        }[]
-        links: {
-            linkID: string
-            url: string
-        }[]
-    }
-}
+import type { Note } from '@/services/notes'
 
-const NoteViewer: React.FC<Note> = props => {
+const NoteViewer: React.FC<{ note: Note }> = props => {
     return (
         <Markdown
             remarkPlugins={[remarkGfm, remarkBreaks]}
             className={`flex w-9/12 flex-col gap-2`}
             skipHtml={true}
+            // Parse \n as <br>
             components={{
                 h1: ({ node, ...props }) => <h1 className="text-2xl font-bold" {...props} />,
                 h2: ({ node, ...props }) => <h2 className="text-xl font-bold" {...props} />,
@@ -61,7 +43,12 @@ const NoteViewer: React.FC<Note> = props => {
                 br: ({ node, ...props }) => <br {...props} />
             }}
         >
-            {props.note.content}
+            {/* Parse \n as <br> */}
+            {props.note.content.replaceAll(
+                '\\n',
+                `
+ `
+            )}
         </Markdown>
     )
 }

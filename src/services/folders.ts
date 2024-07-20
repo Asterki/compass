@@ -57,6 +57,14 @@ const getFolder = (folderId: string): Promise<Folder | null> => {
 }
 
 /**
+ * Retrieves the root folder for a user given the user's ID.
+ * @param userId The ID of the user to retrieve the root folder for.
+ */
+const getRootFolder = (userId: string): Promise<Folder | null> => {
+    return getFolder(`${userId}-rootfd`)
+}
+
+/**
  * Retrieves folders owned by a specific user.
  * @param userId The ID of the user to retrieve folders for.
  * @returns An array of folders owned by the user.
@@ -155,5 +163,6 @@ export {
     getItemsInFolder,
     updateFolder,
     findFoldersByName,
-    findFoldersByTag
+    findFoldersByTag,
+    getRootFolder
 }
