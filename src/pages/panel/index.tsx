@@ -25,15 +25,15 @@ const MainPage = () => {
     
     const createNewNote = async () => {
         try {
-            const response = await fetch('/api/folder/update', {
+            const response = await fetch('/api/notes/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    folderId: "clyqkoji20001yg5rididsg9t",
-                    name: "New FOlder name",
-                    newParentFolderId: "clym2jic700017mrfefzhw3tw-rootfd"
+                    parentFolderId: "clyqkoji20001yg5rididsg9t",
+                    title: 'New note',
+                    content: 'This is a new note'
                 })
             })
 

@@ -190,7 +190,7 @@ const NotesEditPage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    <div className="flex items-center justify-center gap-2">
+                    <div className="flex items-center justify-center gap-2 p-4">
                         <Button variant="secondary" onClick={updateNote}>
                             Save
                         </Button>
@@ -199,8 +199,8 @@ const NotesEditPage = () => {
                         </Button>
                     </div>
 
-                    <div className="flex w-full items-start justify-between">
-                        <div className="flex w-1/2 gap-2 p-4">
+                    <div className="flex md:flex-row flex-col w-full items-start justify-between px-4">
+                        <div className="flex md:w-1/2 w-full gap-2 p-4">
                             <div className="flex flex-col gap-2 p-4">
                                 <FontAwesomeIcon
                                     icon={faHeading}
@@ -265,7 +265,7 @@ const NotesEditPage = () => {
                             </div>
                         </div>
 
-                        <div className="flex w-1/2 flex-col p-4">
+                        <div className="flex md:w-1/2 w-full flex-col p-4">
                             <h1 className="text-2xl">Preview</h1>
 
                             <hr />
@@ -274,7 +274,7 @@ const NotesEditPage = () => {
                                 note={{
                                     attachments: [],
                                     content: editorContent,
-                                    createdAt: new Date().toUTCString(),
+                                    createdAt: new Date(),
                                     title: 'Test Note',
                                     tags: [],
                                     links: [],
