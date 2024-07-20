@@ -38,7 +38,7 @@ export const authOptions: AuthOptions = {
                     name: 'Root',
                     owner_id: user.id,
                     parent_folder_id: null,
-                    id: user.id + '-root',
+                    id: user.id + '-rootfd',
                     created_at: new Date(Date.now())
                 }
             })

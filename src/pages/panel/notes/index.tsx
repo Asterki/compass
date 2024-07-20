@@ -1,19 +1,46 @@
-import Head from "next/head";
+import Head from 'next/head'
+import * as React from 'react'
 
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 
 const NotesIndex = () => {
-    const router = useRouter();
+    const router = useRouter()
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            router.push("/auth/access");
-        },
-    });
+            router.push('/auth/access')
+        }
+    })
+
+    React.useEffect(() => {
+        ;(async () => {
+            if (status == 'authenticated') {
+                const response = await fetch('/api/notes/browser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        parentFolderId: `${(session as any).id}-rootfd`
+                    })
+                })
+
+                if (response.ok) {
+                    const responseBody = await response.json()
+                    console.log(responseBody)
+
+                    // router.push(`/panel/notes/${responseBody.noteID}`)
+                } else {
+                    const errorBody = await response.json()
+                    console.error('Error response:', errorBody)
+                }
+            }
+        })()
+    }, [status])
 
     return (
         <div
@@ -23,14 +50,11 @@ const NotesIndex = () => {
                 <title>Notes | Class Compass</title>
             </Head>
 
-            {status == "loading" && "Loading..."}
+            {status == 'loading' && 'Loading...'}
 
-            {status == "authenticated" && session.user !== undefined && (
-                <h1>Here will be the note browser</h1>
-
-            ) }
+            {status == 'authenticated' && session.user !== undefined && <h1>Here will be the note browser</h1>}
         </div>
-    );
+    )
 }
- 
-export default NotesIndex;
+
+export default NotesIndex
