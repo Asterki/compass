@@ -19,7 +19,7 @@ const RedirectToRootFolder = () => {
         if (status === 'authenticated' && status == "authenticated") {
             router.push(`/panel/notes/browse/${(session as any).id}-rootfd`)
         }
-    }, [status])
+    }, [status, session, router])
 
     return (
         <div

@@ -1,16 +1,25 @@
-import * as React from "react";
+import * as React from 'react'
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"] });
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 
-import Button from "@/components/button";
-import Input from "@/components/input";
-import Select from "@/components/select";
-import Checkbox from "@/components/checkbox";
-import Alert from "@/components/alert";
+import Button from '@/components/button'
+import Input from '@/components/input'
+import Select from '@/components/select'
+import Checkbox from '@/components/checkbox'
+import Dialog from '@/components/dialog'
+import Alert from '@/components/alert'
 
 const ComponentTesting = () => {
-    const [alertOpen, setAlertOpen] = React.useState(false);
+    const [dialogOpen, setDialogOpen] = React.useState(false)
+    const [alertOpen, setAlertOpen] = React.useState(false)
+
+    const showAlertFor = (seconds: number) => {
+        setAlertOpen(true)
+        setTimeout(() => {
+            setAlertOpen(false)
+        }, seconds * 1000)
+    }
 
     return (
         <div
@@ -35,34 +44,34 @@ const ComponentTesting = () => {
                     variant="default"
                     options={[
                         {
-                            value: "1",
-                            label: "Option 1",
+                            value: '1',
+                            label: 'Option 1'
                         },
                         {
-                            value: "2",
-                            label: "Option 2",
+                            value: '2',
+                            label: 'Option 2'
                         },
                         {
-                            value: "3",
-                            label: "Option 3",
-                        },
+                            value: '3',
+                            label: 'Option 3'
+                        }
                     ]}
                 ></Select>
                 <Select
                     variant="disabled"
                     options={[
                         {
-                            value: "1",
-                            label: "Option 1",
+                            value: '1',
+                            label: 'Option 1'
                         },
                         {
-                            value: "2",
-                            label: "Option 2",
+                            value: '2',
+                            label: 'Option 2'
                         },
                         {
-                            value: "3",
-                            label: "Option 3",
-                        },
+                            value: '3',
+                            label: 'Option 3'
+                        }
                     ]}
                 ></Select>
             </div>
@@ -82,22 +91,39 @@ const ComponentTesting = () => {
             </div>
 
             <div>
-                <h1 className="text-2xl">Alert</h1>
+                <h1 className="text-2xl">Dialog</h1>
                 <Button
                     onClick={() => {
-                        setAlertOpen(true);
+                        setDialogOpen(true)
                     }}
                     variant="primary"
                 >
-                    Open Alert
+                    Open Dialog
                 </Button>
 
-                <Alert title="Alert Title" dismissible={true} open={alertOpen} setOpen={setAlertOpen}>
-                    This is the alert description
+                <Dialog title="dialog Title" dismissible={true} open={dialogOpen} setOpen={setDialogOpen}>
+                    This is the dialog description
+                </Dialog>
+            </div>
+
+            <div>
+                <h1 className="text-2xl">Alert</h1>
+
+                <Button
+                    onClick={() => {
+                        showAlertFor(5)
+                    }}
+                    variant="primary"
+                >
+                    Show Alert
+                </Button>
+
+                <Alert variant="info" showing={alertOpen}>
+                    This is a title
                 </Alert>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default ComponentTesting;
+export default ComponentTesting

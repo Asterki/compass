@@ -5,6 +5,8 @@ import NavbarComponent from '@/components/layout/navbar'
 import Button from '@/components/button'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as ContextMenu from '@radix-ui/react-context-menu'
+import DialogComponent from '@/components/dialog'
+import InputComponent from '@/components/input'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -13,8 +15,8 @@ import {
     faFolder,
     faFolderPlus,
     faHome,
-    faNoteSticky,
     faPencil,
+    faStickyNote,
     faTerminal,
     faTrash
 } from '@fortawesome/free-solid-svg-icons'
@@ -44,48 +46,106 @@ const NotesBrowsePage = () => {
     } | null>(null)
     const [folder, setFolder] = React.useState<Folder | null>(null)
 
-    React.useEffect(() => {
-        ;(async () => {
-            if (status == 'authenticated') {
-                // Fetch the folder
-                const responseFolder = await fetch('/api/folder/get', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        folderId: params.folderId || `${(session as any).id}-rootfd`
-                    })
+    const [newFolderName, setNewFolderName] = React.useState('')
+    const [newNoteTitle, setNewNoteTitle] = React.useState('')
+
+    const [newFolderModalOpen, setNewFolderModalOpen] = React.useState(false)
+    const [newNoteModalOpen, setNewNoteModalOpen] = React.useState(false)
+
+    const updateFoldersAndNotes = async () => {
+        if (status == 'authenticated') {
+            // Fetch the folder
+            const responseFolder = await fetch('/api/folder/get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    folderId: params.folderId || `${(session as any).id}-rootfd`
                 })
+            })
 
-                if (responseFolder.ok) {
-                    const responseBodyFolder = await responseFolder.json()
-                    setFolder(responseBodyFolder.folder)
-                } else {
-                    const errorBodyFolder = await responseFolder.json()
-                    console.error('Error response:', errorBodyFolder)
-                }
-
-                // Fetch the contents of the folder
-                const response = await fetch('/api/notes/browser', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        parentFolderId: params.folderId || `${(session as any).id}-rootfd`
-                    })
-                })
-
-                if (response.ok) {
-                    const responseBody = await response.json()
-                    setIntemsInFolder(responseBody.result)
-                } else {
-                    const errorBody = await response.json()
-                    console.error('Error response:', errorBody)
-                }
+            if (responseFolder.ok) {
+                const responseBodyFolder = await responseFolder.json()
+                setFolder(responseBodyFolder.folder)
+            } else {
+                const errorBodyFolder = await responseFolder.json()
+                console.error('Error response:', errorBodyFolder)
             }
-        })()
+
+            // Fetch the contents of the folder
+            const response = await fetch('/api/notes/browser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+                })
+            })
+
+            if (response.ok) {
+                const responseBody = await response.json()
+                setIntemsInFolder(responseBody.result)
+            } else {
+                const errorBody = await response.json()
+                if (errorBody.message == 'Folder not found') {
+                    router.push('/panel/notes/browse')
+                }
+                console.error('Error response:', errorBody)
+            }
+        }
+    }
+
+    const createFolder = async (name: string) => {
+        const response = await fetch('/api/folder/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+            })
+        })
+
+        if (response.ok) {
+            const responseBody = await response.json()
+            console.log('Folder created:', responseBody)
+            updateFoldersAndNotes()
+        } else {
+            const errorBody = await response.json()
+            console.error('Error response:', errorBody)
+        }
+    }
+
+    const createNote = async (title: string, content: string) => {
+        const response = await fetch('/api/notes/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                content,
+                parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+            })
+        })
+
+        if (response.ok) {
+            const responseBody = await response.json()
+            console.log('Note created:', responseBody)
+            updateFoldersAndNotes()
+        } else {
+            const errorBody = await response.json()
+        }
+    }
+
+    
+
+    React.useEffect(() => {
+        updateFoldersAndNotes()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, params, session])
 
     return (
@@ -101,6 +161,64 @@ const NotesBrowsePage = () => {
             {status == 'authenticated' && session.user !== undefined && (
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
+
+                    {/* New Folder Modal */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={newFolderModalOpen}
+                        title="Name the folder"
+                        setOpen={setNewFolderModalOpen}
+                    >
+                        <p>Give the folder a name</p>
+                        <InputComponent
+                            type="text"
+                            placeholder="Folder name"
+                            className="mt-2 w-full"
+                            value={newFolderName}
+                            onChange={e => setNewFolderName(e.target.value)}
+                        />
+
+                        <Button
+                            onClick={() => {
+                                createFolder(newFolderName)
+                                setNewFolderName('')
+                                setNewFolderModalOpen(false)
+                            }}
+                            variant="primary"
+                            className="mt-2 w-full"
+                        >
+                            Create Folder
+                        </Button>
+                    </DialogComponent>
+
+                    {/* New Note Modal */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={newNoteModalOpen}
+                        title="Name the note"
+                        setOpen={setNewNoteModalOpen}
+                    >
+                        <p>Give the note a title</p>
+                        <InputComponent
+                            type="text"
+                            placeholder="Note title"
+                            className="mt-2 w-full"
+                            value={newNoteTitle}
+                            onChange={e => setNewNoteTitle(e.target.value)}
+                        />
+
+                        <Button
+                            onClick={() => {
+                                createNote(newNoteTitle, 'Default Content')
+                                setNewNoteTitle('')
+                                setNewNoteModalOpen(false)
+                            }}
+                            variant={newNoteTitle.length > 0 && newNoteTitle.length < 32 ? 'primary' : 'disabled'}
+                            className="mt-2 w-full"
+                        >
+                            Create Note
+                        </Button>
+                    </DialogComponent>
 
                     {/* Browser  */}
                     <div className="w-11/12 md:w-9/12">
@@ -122,7 +240,7 @@ const NotesBrowsePage = () => {
                                 {/* Folders */}
                                 <Collapsible.Root defaultOpen={true}>
                                     <Collapsible.Trigger className="group mt-4 flex w-full items-center justify-between gap-2 rounded-md bg-gray-200 p-2 dark:bg-slate-800">
-                                        <div className="flex items-center justify-center">
+                                        <div className="flex w-full items-center justify-start">
                                             <FontAwesomeIcon
                                                 icon={faChevronCircleDown}
                                                 className="h-4 w-4 cursor-pointer rounded-full p-2 transition-all hover:bg-gray-400/20 group-data-[state=open]:rotate-180 dark:hover:bg-white/20"
@@ -132,18 +250,19 @@ const NotesBrowsePage = () => {
                                         <div className="flex items-center justify-between">
                                             <FontAwesomeIcon
                                                 icon={faFolderPlus}
+                                                onClick={() => setNewFolderModalOpen(true)}
                                                 className="h-4 w-4 cursor-pointer rounded-full p-2 transition-all hover:bg-gray-400/20 dark:hover:bg-white/20"
                                             />
                                         </div>
                                     </Collapsible.Trigger>
-                                    <Collapsible.Content className="border-gray-00 -mt-2 w-full rounded-md border-2 p-2 pt-4 dark:border-slate-800">
+                                    <Collapsible.Content className="border-gray-00 -mt-2 w-full rounded-md border-2 p-2 transition-all dark:border-slate-800">
                                         <ul>
                                             {itemsInFolder.folders.map(folder => (
                                                 <div key={`${folder.name}-${folder.name}`}>
                                                     <ContextMenu.Root>
                                                         <ContextMenu.Trigger>
                                                             <Collapsible.Trigger
-                                                                className="group flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+                                                                className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
                                                                 onClick={() =>
                                                                     router.push(`/panel/notes/browse/${folder.id}`)
                                                                 }
@@ -156,7 +275,7 @@ const NotesBrowsePage = () => {
                                                                     {folder.name}
                                                                 </div>
 
-                                                                <div className="items-center justify-center gap-2 md:group-hover:flex md:hidden h-4 flex">
+                                                                <div className="flex h-4 items-center justify-center gap-2 md:hidden md:group-hover:flex">
                                                                     <FontAwesomeIcon
                                                                         icon={faPencil}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
@@ -223,31 +342,32 @@ const NotesBrowsePage = () => {
                                         <div className="flex items-center justify-between">
                                             <FontAwesomeIcon
                                                 icon={faFileCirclePlus}
+                                                onClick={() => setNewNoteModalOpen(true)}
                                                 className="h-4 w-4 cursor-pointer rounded-full p-2 transition-all hover:bg-gray-400/20 dark:hover:bg-white/20"
                                             />
                                         </div>
                                     </Collapsible.Trigger>
-                                    <Collapsible.Content className="border-gray-00 -mt-2 w-full rounded-md border-2 p-2 pt-4 dark:border-slate-800">
+                                    <Collapsible.Content className="border-gray-00 -mt-2 w-full rounded-md border-2 p-2 dark:border-slate-800">
                                         <ul>
                                             {itemsInFolder.notes.map(note => (
                                                 <div key={`${note.id}-${note.title}`}>
                                                     <ContextMenu.Root>
                                                         <ContextMenu.Trigger>
                                                             <Collapsible.Trigger
-                                                                className="group flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
+                                                                className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
                                                                 onClick={() =>
-                                                                    router.push(`/panel/notes/browse/${note.id}`)
+                                                                    router.push(`/panel/notes/view/${note.id}`)
                                                                 }
                                                             >
                                                                 <div className="flex-items-center justify-center">
                                                                     <FontAwesomeIcon
-                                                                        icon={faFolder}
+                                                                        icon={faStickyNote}
                                                                         className="mr-2 fill-white"
                                                                     />
                                                                     {note.title}
                                                                 </div>
 
-                                                                <div className="items-center justify-center gap-2 md:group-hover:flex md:hidden h-4 flex">
+                                                                <div className="flex h-4 items-center justify-center gap-2 md:hidden md:group-hover:flex">
                                                                     <FontAwesomeIcon
                                                                         icon={faPencil}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
