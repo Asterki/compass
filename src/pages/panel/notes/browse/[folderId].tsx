@@ -3,10 +3,11 @@ import * as React from 'react'
 import Head from 'next/head'
 import NavbarComponent from '@/components/layout/navbar'
 import Button from '@/components/ui/button'
-import * as Collapsible from '@radix-ui/react-collapsible'
-import * as ContextMenu from '@radix-ui/react-context-menu'
 import DialogComponent from '@/components/ui/dialog'
 import InputComponent from '@/components/ui/input'
+import Alert from '@/components/ui/alert'
+import * as Collapsible from '@radix-ui/react-collapsible'
+import * as ContextMenu from '@radix-ui/react-context-menu'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -45,6 +46,17 @@ const NotesBrowsePage = () => {
         folders: Folder[]
     } | null>(null)
     const [folder, setFolder] = React.useState<Folder | null>(null)
+
+    const [alertOpen, setAlertOpen] = React.useState(false)
+    const [alertText, setAlertText] = React.useState("")
+    const [alertVariant, setAlertVariant] = React.useState<"info" | "destructive" | "warning" | "success">("info")
+
+    const showAlertFor = (seconds: number) => {
+        setAlertOpen(true)
+        setTimeout(() => {
+            setAlertOpen(false)
+        }, seconds * 1000)
+    }
 
     const [newFolderName, setNewFolderName] = React.useState('')
     const [newNoteTitle, setNewNoteTitle] = React.useState('')
@@ -88,7 +100,7 @@ const NotesBrowsePage = () => {
                 const responseBody = await response.json()
                 setIntemsInFolder(responseBody.result)
             } else {
-                const errorBody = await response.json()
+                const errorBody = await response.json() // The folder doesn't exist
                 if (errorBody.message == 'Folder not found') {
                     router.push('/panel/notes/browse')
                 }
@@ -116,6 +128,9 @@ const NotesBrowsePage = () => {
         } else {
             const errorBody = await response.json()
             console.error('Error response:', errorBody)
+            showAlertFor(5)
+            setAlertText("Failed to create folder, unknown error")
+            setAlertVariant("destructive")
         }
     }
 
@@ -138,14 +153,16 @@ const NotesBrowsePage = () => {
             updateFoldersAndNotes()
         } else {
             const errorBody = await response.json()
+            console.error('Error response:', errorBody)
+            showAlertFor(5)
+            setAlertText("Failed to create note, unknown error")
+            setAlertVariant("destructive")
         }
     }
 
-    
-
     React.useEffect(() => {
         updateFoldersAndNotes()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, params, session])
 
     return (
@@ -427,6 +444,10 @@ const NotesBrowsePage = () => {
                             </div>
                         )}
                     </div>
+
+                    <Alert variant={alertVariant} showing={alertOpen}>
+                        {alertText}
+                    </Alert>
                 </main>
             )}
         </div>
