@@ -3,7 +3,7 @@ import { getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 
-import Button from "@/components/button";
+import Button from "@/components/ui/button";
 
 // Fonts
 import { Inter } from "next/font/google";

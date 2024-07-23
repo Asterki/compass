@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 
 import NavbarComponent from "@/components/layout/navbar";
-import Button from "@/components/button";
+import Button from "@/components/ui/button";
 
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });

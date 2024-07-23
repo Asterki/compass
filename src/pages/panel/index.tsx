@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import Head from 'next/head'
 import NavbarComponent from '@/components/layout/navbar'
-import Button from '@/components/button'
+import Button from '@/components/ui/button'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFolder, faNoteSticky, faStickyNote } from '@fortawesome/free-solid-svg-icons'

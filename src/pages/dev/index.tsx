@@ -3,12 +3,12 @@ import * as React from 'react'
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
-import Button from '@/components/button'
-import Input from '@/components/input'
-import Select from '@/components/select'
-import Checkbox from '@/components/checkbox'
-import Dialog from '@/components/dialog'
-import Alert from '@/components/alert'
+import Button from '@/components/ui/button'
+import Input from '@/components/ui/input'
+import Select from '@/components/ui/select'
+import Checkbox from '@/components/ui/checkbox'
+import Dialog from '@/components/ui/dialog'
+import Alert from '@/components/ui/alert'
 
 const ComponentTesting = () => {
     const [dialogOpen, setDialogOpen] = React.useState(false)

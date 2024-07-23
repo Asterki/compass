@@ -2,11 +2,11 @@ import * as React from 'react'
 
 import Head from 'next/head'
 import NavbarComponent from '@/components/layout/navbar'
-import Button from '@/components/button'
+import Button from '@/components/ui/button'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as ContextMenu from '@radix-ui/react-context-menu'
-import DialogComponent from '@/components/dialog'
-import InputComponent from '@/components/input'
+import DialogComponent from '@/components/ui/dialog'
+import InputComponent from '@/components/ui/input'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {

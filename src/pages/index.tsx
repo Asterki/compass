@@ -8,7 +8,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 import { useSession } from "next-auth/react";
-import Button from "@/components/button";
+import Button from "@/components/ui/button";
 
 export default function Home() {
     const router = useRouter();

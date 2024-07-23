@@ -25,7 +25,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 import { Note } from '@/services/notes'
-import Button from '@/components/button'
+import Button from '@/components/ui/button'
 
 const NotesEditPage = () => {
     const router = useRouter()

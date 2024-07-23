@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { getServerSession } from 'next-auth/next'
 
-import { getNote } from '@/services/notes'
 import { getFolder, getItemsInFolder } from '@/services/folders'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
