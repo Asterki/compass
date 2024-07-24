@@ -43,7 +43,7 @@ const createNote = async (data: {
             title: data.title,
             content: data.content,
             created_at: new Date(),
-            tags: [''],
+            tags: [],
             archived: false,
             owner: {
                 connect: { id: data.ownerId }
@@ -90,7 +90,8 @@ const getNote = async (noteId: string) => {
         },
         include: {
             attachments: true,
-            links: true
+            links: true,
+            folder: true
         }
     })
 
