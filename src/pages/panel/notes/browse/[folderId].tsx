@@ -9,6 +9,8 @@ import Alert from '@/components/ui/alert'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 
+import { z, ZodError } from 'zod'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faChevronCircleDown,
@@ -48,8 +50,8 @@ const NotesBrowsePage = () => {
     const [folder, setFolder] = React.useState<Folder | null>(null)
 
     const [alertOpen, setAlertOpen] = React.useState(false)
-    const [alertText, setAlertText] = React.useState("")
-    const [alertVariant, setAlertVariant] = React.useState<"info" | "destructive" | "warning" | "success">("info")
+    const [alertText, setAlertText] = React.useState('')
+    const [alertVariant, setAlertVariant] = React.useState<'info' | 'destructive' | 'warning' | 'success'>('info')
 
     const showAlertFor = (seconds: number) => {
         setAlertOpen(true)
@@ -110,53 +112,87 @@ const NotesBrowsePage = () => {
     }
 
     const createFolder = async (name: string) => {
-        const response = await fetch('/api/folder/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                parentFolderId: params.folderId || `${(session as any).id}-rootfd`
-            })
+        const folderNameSchema = z.string().min(1, { message: 'Give the folder a name' }).max(32, {
+            message: 'Folder name is too long'
         })
+        try {
+            const parsed = folderNameSchema.parse(name)
 
-        if (response.ok) {
-            const responseBody = await response.json()
-            console.log('Folder created:', responseBody)
-            updateFoldersAndNotes()
-        } else {
-            const errorBody = await response.json()
-            console.error('Error response:', errorBody)
-            showAlertFor(5)
-            setAlertText("Failed to create folder, unknown error")
-            setAlertVariant("destructive")
+            const response = await fetch('/api/folder/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: parsed,
+                    parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+                })
+            })
+
+            if (response.ok) {
+                const responseBody = await response.json()
+                console.log('Folder created:', responseBody)
+                updateFoldersAndNotes()
+            } 
+        } catch (error: ZodError | any) {
+            // Check if the error is a ZodError
+            if (error instanceof ZodError) {
+                console.error('Error:', error.errors)
+                showAlertFor(5)
+                setAlertText(error.errors[0].message)
+                setAlertVariant('destructive')
+            } else {
+                console.error('Error:', error)
+                showAlertFor(5)
+                setAlertText('Failed to create folder, unknown error')
+                setAlertVariant('destructive')
+            }
         }
     }
 
     const createNote = async (title: string, content: string) => {
-        const response = await fetch('/api/notes/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                title,
-                content,
-                parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+        const noteSchema = z.object({
+            title: z.string().min(1, { message: 'Give the note a title' }).max(32, {
+                message: 'Note title is too long'
+            }),
+            content: z.string().min(1, { message: 'Give the note some content' }).max(10000, {
+                message: 'Note content is too long'
             })
         })
 
-        if (response.ok) {
-            const responseBody = await response.json()
-            console.log('Note created:', responseBody)
-            updateFoldersAndNotes()
-        } else {
-            const errorBody = await response.json()
-            console.error('Error response:', errorBody)
-            showAlertFor(5)
-            setAlertText("Failed to create note, unknown error")
-            setAlertVariant("destructive")
+        try {
+            const parsed = noteSchema.parse({ title, content })
+
+            const response = await fetch('/api/notes/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: parsed.title,
+                    content: parsed.content,
+                    parentFolderId: params.folderId || `${(session as any).id}-rootfd`
+                })
+            })
+    
+            if (response.ok) {
+                const responseBody = await response.json()
+                console.log('Note created:', responseBody)
+                updateFoldersAndNotes()
+            }
+        } catch (error: ZodError | any) {
+            // Check if the error is a ZodError
+            if (error instanceof ZodError) {
+                console.error('Error:', error.errors)
+                showAlertFor(5)
+                setAlertText(error.errors[0].message)
+                setAlertVariant('destructive')
+            } else {
+                console.error('Error:', error)
+                showAlertFor(5)
+                setAlertText('Failed to create note, unknown error')
+                setAlertVariant('destructive')
+            }
         }
     }
 
