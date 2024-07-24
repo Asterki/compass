@@ -34,7 +34,7 @@ export default function Home() {
                     <br />
 
                     <p>
-                        Class Compass is an open-source project that aims to help students manage their academic,
+                        Compass is an open-source project that aims to help students manage their academic,
                         professional, and personal life in a single, centralized, easy-to-use platform. It is designed
                         to be simple, intuitive, and user-friendly.
                     </p>
@@ -71,7 +71,7 @@ export default function Home() {
                 <p className="text-sm">
                     &copy; {new Date(Date.now()).getFullYear()}{" "}
                     <Link href="/" className="font-semibold text-purple-500 hover:underline">
-                        Class Compass
+                        Compass
                     </Link>
                     . All rights reserved. Created by{" "}
                     <Link href="https://github.com/Asterki/" className="font-semibold text-purple-500 hover:underline">

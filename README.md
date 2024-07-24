@@ -1,10 +1,10 @@
-# Class Compass
+# Compass
 
 This project is a web application that functions similarly to Notion. It allows users to create and manage notes, link between notes, and use predefined templates. The app uses Next.js for the frontend, TailwindCSS for styling, and TypeScript for type safety. User authentication is supported via GitHub, Discord, and Google login. Data is stored in a PostgreSQL database, managed with Prisma.
 
 ## Table of Contents
 
-- [Class Compass](#class-compass)
+- [Compass](#class-compass)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Tech Stack](#tech-stack)

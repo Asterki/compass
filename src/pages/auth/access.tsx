@@ -50,7 +50,7 @@ const SignUpPage = ({ providers }: InferGetServerSidePropsType<typeof getServerS
                 <p className="text-sm">
                     &copy; {new Date(Date.now()).getFullYear()}{" "}
                     <Link href="/" className="font-semibold text-purple-500 hover:underline">
-                        Class Compass
+                        Compass
                     </Link>
                     . All rights reserved. Created by{" "}
                     <Link href="https://github.com/Asterki/" className="font-semibold text-purple-500 hover:underline">

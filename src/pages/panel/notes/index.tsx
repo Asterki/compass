@@ -47,7 +47,7 @@ const NotesIndex = () => {
             className={`flex min-h-screen w-full flex-col items-center justify-between ${inter.className} bg-purple-50 text-slate-700 dark:bg-slate-900 dark:text-slate-300`}
         >
             <Head>
-                <title>Notes | Class Compass</title>
+                <title>Notes | Compass</title>
             </Head>
 
             {status == 'loading' && 'Loading...'}

@@ -38,7 +38,7 @@ const MainPage = () => {
                     <section>
                         <h2 className="text-center text-4xl font-bold">Hello, {session.user.name}!</h2>
                         <p className="text-center text-lg">
-                            Welcome to Class Compass, your one-stop shop for all things school-related.
+                            Welcome to Compass, your one-stop shop for all things school-related.
                         </p>
                         <p className="text-center text-lg">Get started by checking out the features we offer below!</p>
                         <div className="flex justify-center gap-4 lg:justify-start">

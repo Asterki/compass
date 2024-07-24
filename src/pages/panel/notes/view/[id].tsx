@@ -87,7 +87,7 @@ const ViewNoteById = () => {
                 }
             })()
         }
-    }, [status])
+    }, [params.id, status])
 
     return (
         <div
@@ -134,8 +134,8 @@ const ViewNoteById = () => {
                     </Dialog>
 
                     {note !== null && (
-                        <div className="flex w-full flex-col items-center justify-around gap-4">
-                            <div className="flex w-9/12 items-center justify-between gap-4">
+                        <div className="mt-2 flex w-full flex-col items-center justify-around gap-4">
+                            <div className="flex w-9/12 items-center justify-between gap-4 border-b-2 border-b-white/20">
                                 <div className="flex flex-col items-start justify-start">
                                     <h1 className="text-3xl font-bold">
                                         <Link
