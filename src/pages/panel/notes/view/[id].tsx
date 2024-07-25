@@ -1,19 +1,23 @@
 import * as React from 'react'
 
+// Components
 import Head from 'next/head'
 import Link from 'next/link'
-
 import NavbarComponent from '@/components/layout/navbar'
 import Button from '@/components/ui/button'
 import Dialog from '@/components/ui/dialog'
-
+import Alert from '@/components/ui/alert'
 import NoteViewer from '@/components/notes/viewer'
 
+// Fonts
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
+// Next-Related
 import { useSession } from 'next-auth/react'
 import { useParams, useRouter } from 'next/navigation'
+
+// Types
 import { Note } from '@/services/notes'
 import { Folder } from '@/services/folders'
 
@@ -28,32 +32,42 @@ const ViewNoteById = () => {
         }
     })
 
+    const showAlertFor = (seconds: number) => {
+        setAlertOpen(true)
+        setTimeout(() => {
+            setAlertOpen(false)
+        }, seconds * 1000)
+    }
+
     const [note, setNote] = React.useState<(Note & { folder: Folder }) | null>(null)
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
 
+    const [alertOpen, setAlertOpen] = React.useState(false)
+    const [alertText, setAlertText] = React.useState('')
+    const [alertVariant, setAlertVariant] = React.useState<'info' | 'destructive' | 'warning' | 'success'>('info')
+
     const deleteCurrentNote = async () => {
-        try {
-            const response = await fetch('/api/notes/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    noteId: params.id
-                })
+        const response = await fetch('/api/notes/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                noteId: params.id
             })
+        })
 
-            if (response.ok) {
-                const responseBody = await response.json()
-                console.log(responseBody)
+        if (response.ok) {
+            const responseBody = await response.json()
+            console.log(responseBody)
 
-                router.push(`/panel/notes/browse/${note?.parent_folder_id}`)
-            } else {
-                const errorBody = await response.json()
-                console.error('Error response:', errorBody)
-            }
-        } catch (error) {
-            console.error('Fetch error:', error)
+            router.push(`/panel/notes/browse/${note?.parent_folder_id}`)
+        } else {
+            const errorBody = await response.json()
+            console.error('Error response:', errorBody)
+            setAlertText('An error occurred while deleting the note. Please try again later.')
+            setAlertVariant('destructive')
+            showAlertFor(5)
         }
     }
 
@@ -87,7 +101,7 @@ const ViewNoteById = () => {
                 }
             })()
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status])
 
     return (
@@ -113,7 +127,7 @@ const ViewNoteById = () => {
                     >
                         <div className="flex flex-col items-start justify-start gap-4">
                             <p>Are you sure you want to delete this note?</p>
-                            <div className="flex items-center w-full justify-end gap-2">
+                            <div className="flex w-full items-center justify-end gap-2">
                                 <Button
                                     onClick={() => {
                                         setDeleteDialogOpen(false)
@@ -138,10 +152,10 @@ const ViewNoteById = () => {
                         <div className="mt-2 flex w-full flex-col items-center justify-around gap-4">
                             <div className="flex w-11/12 flex-col items-center justify-between gap-4 border-b-2 border-b-white/20 md:w-9/12 md:flex-row lg:w-8/12">
                                 <div className="flex flex-col items-start justify-center text-center md:justify-start md:text-left">
-                                    <h1 className="text-center text-3xl font-bold md:text-left w-full">
+                                    <h1 className="w-full text-center text-3xl font-bold md:text-left">
                                         <Link
                                             href={`/panel/notes/browse/${note.parent_folder_id}`}
-                                            className="dark:text-blue-400 text-blue-500"
+                                            className="text-blue-500 dark:text-blue-400"
                                         >
                                             {note.folder.name}
                                         </Link>
@@ -152,7 +166,7 @@ const ViewNoteById = () => {
                                         <br /> Tags: {note.tags.length !== 0 ? note.tags.join(', ') : 'None'}
                                     </div>
                                 </div>
-                                <div className="flex w-full items-center md:justify-end justify-center mb-2 md:mb-0 gap-2">
+                                <div className="mb-2 flex w-full items-center justify-center gap-2 md:mb-0 md:justify-end">
                                     <Button
                                         onClick={() => {
                                             router.push(`/panel/notes/edit/${params.id}`)
@@ -179,6 +193,10 @@ const ViewNoteById = () => {
                             </div>
                         </div>
                     )}
+
+                    <Alert variant={alertVariant} showing={alertOpen}>
+                        {alertText}
+                    </Alert>
                 </main>
             )}
         </div>
