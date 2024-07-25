@@ -87,7 +87,8 @@ const ViewNoteById = () => {
                 }
             })()
         }
-    }, [params.id, status])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status])
 
     return (
         <div
@@ -112,7 +113,7 @@ const ViewNoteById = () => {
                     >
                         <div className="flex flex-col items-start justify-start gap-4">
                             <p>Are you sure you want to delete this note?</p>
-                            <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center w-full justify-end gap-2">
                                 <Button
                                     onClick={() => {
                                         setDeleteDialogOpen(false)
@@ -140,7 +141,7 @@ const ViewNoteById = () => {
                                     <h1 className="text-center text-3xl font-bold md:text-left w-full">
                                         <Link
                                             href={`/panel/notes/browse/${note.parent_folder_id}`}
-                                            className="text-blue-400"
+                                            className="dark:text-blue-400 text-blue-500"
                                         >
                                             {note.folder.name}
                                         </Link>
