@@ -135,9 +135,9 @@ const ViewNoteById = () => {
 
                     {note !== null && (
                         <div className="mt-2 flex w-full flex-col items-center justify-around gap-4">
-                            <div className="flex w-9/12 items-center justify-between gap-4 border-b-2 border-b-white/20">
-                                <div className="flex flex-col items-start justify-start">
-                                    <h1 className="text-3xl font-bold">
+                            <div className="flex w-11/12 flex-col items-center justify-between gap-4 border-b-2 border-b-white/20 md:w-9/12 md:flex-row lg:w-8/12">
+                                <div className="flex flex-col items-start justify-center text-center md:justify-start md:text-left">
+                                    <h1 className="text-center text-3xl font-bold md:text-left w-full">
                                         <Link
                                             href={`/panel/notes/browse/${note.parent_folder_id}`}
                                             className="text-blue-400"
@@ -151,12 +151,13 @@ const ViewNoteById = () => {
                                         <br /> Tags: {note.tags.length !== 0 ? note.tags.join(', ') : 'None'}
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between gap-2">
+                                <div className="flex w-full items-center md:justify-end justify-center mb-2 md:mb-0 gap-2">
                                     <Button
                                         onClick={() => {
                                             router.push(`/panel/notes/edit/${params.id}`)
                                         }}
                                         variant={'primary'}
+                                        className="w-5/12 md:w-auto"
                                     >
                                         Edit
                                     </Button>
@@ -165,13 +166,16 @@ const ViewNoteById = () => {
                                             setDeleteDialogOpen(true)
                                         }}
                                         variant={'destructive'}
+                                        className="w-5/12 md:w-auto"
                                     >
                                         Delete
                                     </Button>
                                 </div>
                             </div>
 
-                            {note !== null && <NoteViewer note={note as Note} />}
+                            <div className="w-11/12 md:w-9/12 lg:w-8/12">
+                                {note !== null && <NoteViewer note={note as Note} />}
+                            </div>
                         </div>
                     )}
                 </main>
