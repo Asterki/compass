@@ -9,7 +9,7 @@ interface DialogProps {
     open: boolean; // Boolean to control the visibility of the alert dialog
     children: React.ReactNode; // Content of the alert dialog, can be any React node
     dismissible: boolean; // Determines if the alert dialog can be closed by the user
-    setOpen: (open: boolean) => void; // Function to update the visibility state of the dialog
+    setOpen?: (open: boolean) => void; // Function to update the visibility state of the dialog
 }
 
 /**
@@ -21,7 +21,7 @@ interface DialogProps {
 const DialogComponent: React.FC<DialogProps> = ({ title, open, children, dismissible, setOpen }) => {
     // Handle the close action of the alert dialog
     const handleClose = () => {
-        if (dismissible) {
+        if (dismissible && setOpen) {
             setOpen(false);
         }
     };

@@ -49,22 +49,43 @@ const NotesBrowsePage = () => {
     } | null>(null)
     const [folder, setFolder] = React.useState<Folder | null>(null)
 
-    const [alertOpen, setAlertOpen] = React.useState(false)
-    const [alertText, setAlertText] = React.useState('')
-    const [alertVariant, setAlertVariant] = React.useState<'info' | 'destructive' | 'warning' | 'success'>('info')
+    const [alertState, setAlertState] = React.useState({
+        open: false,
+        text: '',
+        variant: 'info' as 'info' | 'destructive' | 'warning' | 'success'
+    })
+
+    const [editNoteState, setEditNoteState] = React.useState({
+        content: '',
+        dialogOpen: false
+    })
+
+    const [deleteNoteDialogOpen, setDeleteNoteDialogOpen] = React.useState(false)
+
+    const [editFolderState, setEditFolderState] = React.useState({
+        name: '',
+        dialogOpen: false
+    })
+
+    const [deleteFolderDialogOpen, setDeleteFolderDialogOpen] = React.useState(false)
 
     const showAlertFor = (seconds: number) => {
-        setAlertOpen(true)
+        setAlertState({ ...alertState, open: true })
         setTimeout(() => {
-            setAlertOpen(false)
+            setAlertState({ ...alertState, open: false })
         }, seconds * 1000)
     }
 
-    const [newFolderName, setNewFolderName] = React.useState('')
-    const [newNoteTitle, setNewNoteTitle] = React.useState('')
+    const [newFolderState, setNewFolderState] = React.useState({
+        name: '',
+        dialogOpen: false
+    })
 
-    const [newFolderModalOpen, setNewFolderModalOpen] = React.useState(false)
-    const [newNoteModalOpen, setNewNoteModalOpen] = React.useState(false)
+    const [newNoteState, setNewNoteState] = React.useState({
+        title: '',
+        content: '',
+        dialogOpen: false
+    })
 
     const updateFoldersAndNotes = async () => {
         if (status == 'authenticated') {
@@ -137,16 +158,13 @@ const NotesBrowsePage = () => {
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
             if (error instanceof ZodError) {
-                console.error('Error:', error.errors)
-                showAlertFor(5)
-                setAlertText(error.errors[0].message)
-                setAlertVariant('destructive')
+                setAlertState({ ...alertState, text: error.errors[0].message })
             } else {
-                console.error('Error:', error)
-                showAlertFor(5)
-                setAlertText('Failed to create folder, unknown error')
-                setAlertVariant('destructive')
+                setAlertState({ ...alertState, text: 'Failed to create folder, unknown error' })
             }
+
+            console.error('Error:', error)
+            showAlertFor(5)
         }
     }
 
@@ -183,16 +201,13 @@ const NotesBrowsePage = () => {
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
             if (error instanceof ZodError) {
-                console.error('Error:', error.errors)
-                showAlertFor(5)
-                setAlertText(error.errors[0].message)
-                setAlertVariant('destructive')
+                setAlertState({ ...alertState, text: error.errors[0].message })
             } else {
-                console.error('Error:', error)
-                showAlertFor(5)
-                setAlertText('Failed to create note, unknown error')
-                setAlertVariant('destructive')
+                setAlertState({ ...alertState, text: 'Failed to create note, unknown error' })
             }
+
+            console.error('Error:', error)
+            showAlertFor(5)
         }
     }
 
@@ -218,25 +233,23 @@ const NotesBrowsePage = () => {
                     {/* New Folder Modal */}
                     <DialogComponent
                         dismissible={true}
-                        open={newFolderModalOpen}
+                        open={newFolderState.dialogOpen}
                         title="Name the folder"
-                        setOpen={setNewFolderModalOpen}
+                        setOpen={() => {
+                            setNewFolderState({ ...newFolderState, dialogOpen: false })
+                        }}
                     >
                         <p>Give the folder a name</p>
                         <InputComponent
                             type="text"
                             placeholder="Folder name"
                             className="mt-2 w-full"
-                            value={newFolderName}
-                            onChange={e => setNewFolderName(e.target.value)}
+                            value={newFolderState.name}
+                            onChange={e => setNewFolderState({ ...newFolderState, name: e.target.value })}
                         />
 
                         <Button
-                            onClick={() => {
-                                createFolder(newFolderName)
-                                setNewFolderName('')
-                                setNewFolderModalOpen(false)
-                            }}
+                            onClick={() => createFolder(newFolderState.name)}
                             variant="primary"
                             className="mt-2 w-full"
                         >
@@ -247,26 +260,28 @@ const NotesBrowsePage = () => {
                     {/* New Note Modal */}
                     <DialogComponent
                         dismissible={true}
-                        open={newNoteModalOpen}
+                        open={newNoteState.dialogOpen}
                         title="Name the note"
-                        setOpen={setNewNoteModalOpen}
+                        setOpen={() => {
+                            setNewNoteState({ ...newNoteState, dialogOpen: false })
+                        }}
                     >
                         <p>Give the note a title</p>
                         <InputComponent
                             type="text"
                             placeholder="Note title"
                             className="mt-2 w-full"
-                            value={newNoteTitle}
-                            onChange={e => setNewNoteTitle(e.target.value)}
+                            value={newNoteState.title}
+                            onChange={e => setNewNoteState({ ...newNoteState, title: e.target.value })}
                         />
 
                         <Button
                             onClick={() => {
-                                createNote(newNoteTitle, 'Default Content')
-                                setNewNoteTitle('')
-                                setNewNoteModalOpen(false)
+                                createNote(newNoteState.title, newNoteState.content)
                             }}
-                            variant={newNoteTitle.length > 0 && newNoteTitle.length < 32 ? 'primary' : 'disabled'}
+                            variant={
+                                newNoteState.title.length > 0 && newNoteState.title.length < 32 ? 'primary' : 'disabled'
+                            }
                             className="mt-2 w-full"
                         >
                             Create Note
@@ -303,7 +318,12 @@ const NotesBrowsePage = () => {
                                         <div className="flex items-center justify-between">
                                             <FontAwesomeIcon
                                                 icon={faFolderPlus}
-                                                onClick={() => setNewFolderModalOpen(true)}
+                                                onClick={() =>
+                                                    setNewFolderState({
+                                                        ...newFolderState,
+                                                        dialogOpen: true
+                                                    })
+                                                }
                                                 className="h-4 w-4 cursor-pointer rounded-full p-2 transition-all hover:bg-gray-400/20 dark:hover:bg-white/20"
                                             />
                                         </div>
@@ -316,7 +336,7 @@ const NotesBrowsePage = () => {
                                                         <ContextMenu.Trigger>
                                                             <div className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700">
                                                                 <div
-                                                                    className="flex items-center w-full justify-start"
+                                                                    className="flex w-full items-center justify-start"
                                                                     onClick={() =>
                                                                         router.push(`/panel/notes/browse/${folder.id}`)
                                                                     }
@@ -395,7 +415,12 @@ const NotesBrowsePage = () => {
                                         <div className="flex items-center justify-between">
                                             <FontAwesomeIcon
                                                 icon={faFileCirclePlus}
-                                                onClick={() => setNewNoteModalOpen(true)}
+                                                onClick={() =>
+                                                    setNewNoteState({
+                                                        ...newNoteState,
+                                                        dialogOpen: true
+                                                    })
+                                                }
                                                 className="h-4 w-4 cursor-pointer rounded-full p-2 transition-all hover:bg-gray-400/20 dark:hover:bg-white/20"
                                             />
                                         </div>
@@ -408,7 +433,7 @@ const NotesBrowsePage = () => {
                                                         <ContextMenu.Trigger>
                                                             <div className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700">
                                                                 <div
-                                                                    className="flex items-center w-full justify-start"
+                                                                    className="flex w-full items-center justify-start"
                                                                     onClick={() =>
                                                                         router.push(`/panel/notes/view/${note.id}`)
                                                                     }
@@ -481,8 +506,8 @@ const NotesBrowsePage = () => {
                         )}
                     </div>
 
-                    <Alert variant={alertVariant} showing={alertOpen}>
-                        {alertText}
+                    <Alert variant={alertState.variant} showing={alertState.open}>
+                        {alertState.text}
                     </Alert>
                 </main>
             )}
