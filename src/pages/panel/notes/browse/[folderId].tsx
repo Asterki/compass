@@ -54,39 +54,43 @@ const NotesBrowsePage = () => {
         text: '',
         variant: 'info' as 'info' | 'destructive' | 'warning' | 'success'
     })
-
-    const [editNoteState, setEditNoteState] = React.useState({
-        content: '',
-        dialogOpen: false
-    })
-
-    const [deleteNoteDialogOpen, setDeleteNoteDialogOpen] = React.useState(false)
-
-    const [editFolderState, setEditFolderState] = React.useState({
-        name: '',
-        dialogOpen: false
-    })
-
-    const [deleteFolderDialogOpen, setDeleteFolderDialogOpen] = React.useState(false)
-
-    const showAlertFor = (seconds: number) => {
-        setAlertState({ ...alertState, open: true })
+    const showAlert = (seconds: number, text: string, variant: 'info' | 'destructive' | 'warning' | 'success') => {
+        setAlertState({ open: true, text, variant })
         setTimeout(() => {
-            setAlertState({ ...alertState, open: false })
+            setAlertState({ open: false, text: '', variant: 'info' })
         }, seconds * 1000)
     }
 
-    const [newFolderState, setNewFolderState] = React.useState({
-        name: '',
-        dialogOpen: false
-    })
-
+    // Note-related states
     const [newNoteState, setNewNoteState] = React.useState({
         title: '',
         content: '',
         dialogOpen: false
     })
+    const [editNoteNameState, setEditNoteState] = React.useState({
+        content: '',
+        dialogOpen: false
+    })
+    const [deleteNoteDialogState, setDeleteNoteDialogState] = React.useState({
+        dialogOpen: false,
+        noteId: ''
+    })
 
+    // Folder-related states
+    const [editFolderNameState, setEditFolderNameState] = React.useState({
+        name: '',
+        dialogOpen: false
+    })
+    const [deleteFolderDialogState, setDeleteFolderDialogState] = React.useState({
+        dialogOpen: false,
+        folderId: ''
+    })
+    const [newFolderState, setNewFolderState] = React.useState({
+        name: '',
+        dialogOpen: false
+    })
+
+    // Fetch the folder and its contents
     const updateFoldersAndNotes = async () => {
         if (status == 'authenticated') {
             // Fetch the folder
@@ -132,6 +136,7 @@ const NotesBrowsePage = () => {
         }
     }
 
+    // Folder-related functions
     const createFolder = async (name: string) => {
         const folderNameSchema = z.string().min(1, { message: 'Give the folder a name' }).max(32, {
             message: 'Folder name is too long'
@@ -151,23 +156,78 @@ const NotesBrowsePage = () => {
             })
 
             if (response.ok) {
-                const responseBody = await response.json()
-                console.log('Folder created:', responseBody)
                 updateFoldersAndNotes()
+                setNewFolderState({ ...newFolderState, dialogOpen: false })
             }
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
-            if (error instanceof ZodError) {
-                setAlertState({ ...alertState, text: error.errors[0].message })
-            } else {
-                setAlertState({ ...alertState, text: 'Failed to create folder, unknown error' })
-            }
-
-            console.error('Error:', error)
-            showAlertFor(5)
+            setAlertState({
+                open: true,
+                variant: 'destructive',
+                text: error instanceof ZodError ? error.errors[0].message : 'Failed to create note, unknown error'
+            })
         }
+
+        setNewFolderState({ ...newFolderState, dialogOpen: false })
     }
 
+    const deleteFolder = async (folderId: string) => {
+        const response = await fetch('/api/folder/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                folderId: folderId
+            })
+        })
+
+        if (response.ok) {
+            updateFoldersAndNotes()
+            showAlert(5, 'Folder deleted successfully', 'success')
+        } else {
+            showAlert(5, 'An error occurred while deleting the folder. Please try again later.', 'destructive')
+        }
+
+        setDeleteFolderDialogState({ ...deleteFolderDialogState, dialogOpen: false })
+    }
+
+    const editFolderName = async (folderId: string, newName: string) => {
+        const folderNameSchema = z.string().min(1, { message: 'Give the folder a name' }).max(32, {
+            message: 'Folder name is too long'
+        })
+
+        try {
+            const parsed = folderNameSchema.parse(newName)
+
+            const response = await fetch('/api/folder/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    folderId: folderId,
+                    newName: parsed
+                })
+            })
+
+            if (response.ok) {
+                updateFoldersAndNotes()
+                showAlert(5, 'Folder name edited successfully', 'success')
+            }
+        } catch (error: ZodError | any) {
+            // Check if the error is a ZodError
+            setAlertState({
+                open: true,
+                variant: 'destructive',
+                text: error instanceof ZodError ? error.errors[0].message : 'Failed to create note, unknown error'
+            })
+        }
+
+        setEditFolderNameState({ ...editFolderNameState, dialogOpen: false })
+    }
+
+    // Note-related functions
     const createNote = async (title: string, content: string) => {
         const noteSchema = z.object({
             title: z.string().min(1, { message: 'Give the note a title' }).max(32, {
@@ -194,21 +254,76 @@ const NotesBrowsePage = () => {
             })
 
             if (response.ok) {
+                updateFoldersAndNotes()
+                showAlert(5, 'Note created successfully', 'success')
+            }
+        } catch (error: ZodError | any) {
+            // Check if the error is a ZodError
+            setAlertState({
+                open: true,
+                variant: 'destructive',
+                text: error instanceof ZodError ? error.errors[0].message : 'Failed to create note, unknown error'
+            })
+        }
+
+        setNewNoteState({ ...newNoteState, dialogOpen: false, content: '', title: '' })
+    }
+
+    const deleteNote = async (noteId: string) => {
+        const response = await fetch('/api/notes/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                noteId: noteId
+            })
+        })
+
+        if (response.ok) {
+            updateFoldersAndNotes()
+            showAlert(5, 'Note deleted successfully', 'success')
+        } else {
+            showAlert(5, 'An error occurred while deleting the note. Please try again later.', 'destructive')
+        }
+
+        setDeleteNoteDialogState({ ...deleteNoteDialogState, dialogOpen: false })
+    }
+
+    const editNoteName = async (noteId: string, newName: string) => {
+        const noteNameSchema = z.string().min(1, { message: 'Give the note a title' }).max(32, {
+            message: 'Note title is too long'
+        })
+
+        try {
+            const parsed = noteNameSchema.parse(newName)
+
+            const response = await fetch('/api/notes/edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    noteId: noteId,
+                    newName: parsed
+                })
+            })
+
+            if (response.ok) {
                 const responseBody = await response.json()
-                console.log('Note created:', responseBody)
+                console.log('Note edited:', responseBody)
                 updateFoldersAndNotes()
             }
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
-            if (error instanceof ZodError) {
-                setAlertState({ ...alertState, text: error.errors[0].message })
-            } else {
-                setAlertState({ ...alertState, text: 'Failed to create note, unknown error' })
-            }
-
-            console.error('Error:', error)
-            showAlertFor(5)
+            setAlertState({
+                open: true,
+                variant: 'destructive',
+                text: error instanceof ZodError ? error.errors[0].message : 'Failed to create note, unknown error'
+            })
         }
+
+        setEditNoteState({ ...editNoteNameState, dialogOpen: false })
     }
 
     React.useEffect(() => {
@@ -244,7 +359,6 @@ const NotesBrowsePage = () => {
                             type="text"
                             placeholder="Folder name"
                             className="mt-2 w-full"
-                            value={newFolderState.name}
                             onChange={e => setNewFolderState({ ...newFolderState, name: e.target.value })}
                         />
 
@@ -255,6 +369,36 @@ const NotesBrowsePage = () => {
                         >
                             Create Folder
                         </Button>
+                    </DialogComponent>
+
+                    {/* Delete Folder Modal */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={deleteFolderDialogState.dialogOpen}
+                        title="Delete Folder"
+                        setOpen={() => {
+                            setDeleteFolderDialogState({ ...deleteFolderDialogState, dialogOpen: false })
+                        }}
+                    >
+                        <p>Are you sure you want to delete this folder?</p>
+                        <div className="mt-4 flex w-full items-center justify-end gap-2">
+                            <Button
+                                onClick={() => {
+                                    setDeleteFolderDialogState({ ...deleteFolderDialogState, dialogOpen: false })
+                                }}
+                                variant="secondary"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    deleteFolder(deleteFolderDialogState.folderId)
+                                }}
+                                variant="destructive"
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     </DialogComponent>
 
                     {/* New Note Modal */}
@@ -271,8 +415,14 @@ const NotesBrowsePage = () => {
                             type="text"
                             placeholder="Note title"
                             className="mt-2 w-full"
-                            value={newNoteState.title}
                             onChange={e => setNewNoteState({ ...newNoteState, title: e.target.value })}
+                        />
+
+                        <p>Give the note some default content</p>
+                        <textarea
+                            placeholder="Note content"
+                            className="border-2-dark mt-2 h-32 w-full rounded-md border-2 bg-gray-200 p-2 outline-none transition-all focus:border-blue-400 dark:border-slate-800 dark:bg-slate-800"
+                            onChange={e => setNewNoteState({ ...newNoteState, content: e.target.value })}
                         />
 
                         <Button
@@ -286,6 +436,36 @@ const NotesBrowsePage = () => {
                         >
                             Create Note
                         </Button>
+                    </DialogComponent>
+
+                    {/* Delete Note Dialog */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={deleteNoteDialogState.dialogOpen}
+                        title="Delete note"
+                        setOpen={() => {
+                            setDeleteNoteDialogState({ ...deleteNoteDialogState, dialogOpen: false })
+                        }}
+                    >
+                        <p>Are you sure you want to delete this note?</p>
+                        <div className="mt-4 flex w-full items-center justify-end gap-2">
+                            <Button
+                                onClick={() => {
+                                    setDeleteNoteDialogState({ ...deleteNoteDialogState, dialogOpen: false })
+                                }}
+                                variant="secondary"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    deleteNote(deleteNoteDialogState.noteId)
+                                }}
+                                variant="destructive"
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     </DialogComponent>
 
                     {/* Browser  */}
@@ -355,6 +535,12 @@ const NotesBrowsePage = () => {
                                                                     />
                                                                     <FontAwesomeIcon
                                                                         icon={faTrash}
+                                                                        onClick={() => {
+                                                                            setDeleteFolderDialogState({
+                                                                                dialogOpen: true,
+                                                                                folderId: folder.id
+                                                                            })
+                                                                        }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 transition-all hover:bg-gray-400/20 hover:text-red-500 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                 </div>
@@ -379,9 +565,12 @@ const NotesBrowsePage = () => {
                                                                     Rename
                                                                 </Button>
                                                                 <Button
-                                                                    onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${folder.id}`)
-                                                                    }
+                                                                    onClick={() => {
+                                                                        setDeleteFolderDialogState({
+                                                                            dialogOpen: true,
+                                                                            folderId: folder.id
+                                                                        })
+                                                                    }}
                                                                     variant="destructive"
                                                                 >
                                                                     Delete
@@ -448,6 +637,9 @@ const NotesBrowsePage = () => {
                                                                 <div className="flex h-4 items-center justify-center gap-2 md:hidden md:group-hover:flex">
                                                                     <FontAwesomeIcon
                                                                         icon={faPencil}
+                                                                        onClick={() => {
+                                                                            router.push(`/panel/notes/edit/${note.id}`)
+                                                                        }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                     <FontAwesomeIcon
@@ -456,6 +648,12 @@ const NotesBrowsePage = () => {
                                                                     />
                                                                     <FontAwesomeIcon
                                                                         icon={faTrash}
+                                                                        onClick={() => {
+                                                                            setDeleteNoteDialogState({
+                                                                                dialogOpen: true,
+                                                                                noteId: note.id
+                                                                            })
+                                                                        }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 transition-all hover:bg-gray-400/20 hover:text-red-500 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                 </div>
@@ -481,7 +679,10 @@ const NotesBrowsePage = () => {
                                                                 </Button>
                                                                 <Button
                                                                     onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${note.id}`)
+                                                                        setDeleteNoteDialogState({
+                                                                            dialogOpen: true,
+                                                                            noteId: note.id
+                                                                        })
                                                                     }
                                                                     variant="destructive"
                                                                 >
