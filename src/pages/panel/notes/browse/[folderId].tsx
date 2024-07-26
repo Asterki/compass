@@ -9,7 +9,7 @@ import Alert from '@/components/ui/alert'
 import * as Collapsible from '@radix-ui/react-collapsible'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 
-import { z, ZodError } from 'zod'
+import { set, z, ZodError } from 'zod'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -228,14 +228,18 @@ const NotesBrowsePage = () => {
     }
 
     // Note-related functions
-    const createNote = async (title: string, content: string) => {
+    const createNote = async (title: string, content?: string) => {
         const noteSchema = z.object({
             title: z.string().min(1, { message: 'Give the note a title' }).max(32, {
                 message: 'Note title is too long'
             }),
-            content: z.string().min(1, { message: 'Give the note some content' }).max(10000, {
-                message: 'Note content is too long'
-            })
+            content: z
+                .string()
+                .min(1, { message: 'Give the note some content' })
+                .max(10000, {
+                    message: 'Note content is too long'
+                })
+                .optional()
         })
 
         try {
@@ -248,7 +252,7 @@ const NotesBrowsePage = () => {
                 },
                 body: JSON.stringify({
                     title: parsed.title,
-                    content: parsed.content,
+                    content: parsed.content || 'Default Content',
                     parentFolderId: params.folderId || `${(session as any).id}-rootfd`
                 })
             })
@@ -345,7 +349,7 @@ const NotesBrowsePage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    {/* New Folder Modal */}
+                    {/* New Folder Dialog */}
                     <DialogComponent
                         dismissible={true}
                         open={newFolderState.dialogOpen}
@@ -371,7 +375,7 @@ const NotesBrowsePage = () => {
                         </Button>
                     </DialogComponent>
 
-                    {/* Delete Folder Modal */}
+                    {/* Delete Folder Dialog */}
                     <DialogComponent
                         dismissible={true}
                         open={deleteFolderDialogState.dialogOpen}
@@ -401,7 +405,33 @@ const NotesBrowsePage = () => {
                         </div>
                     </DialogComponent>
 
-                    {/* New Note Modal */}
+                    {/* Edit Folder Name Dialog */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={editFolderNameState.dialogOpen}
+                        title="Edit Folder Name"
+                        setOpen={() => {
+                            setEditFolderNameState({ ...editFolderNameState, dialogOpen: false })
+                        }}
+                    >
+                        <p>Give the folder a new name</p>
+                        <InputComponent
+                            type="text"
+                            placeholder="Folder name"
+                            className="mt-2 w-full"
+                            onChange={e => setEditFolderNameState({ ...editFolderNameState, name: e.target.value })}
+                        />
+
+                        <Button
+                            onClick={() => editFolderName(editFolderNameState.name, editFolderNameState.name)}
+                            variant="primary"
+                            className="mt-2 w-full"
+                        >
+                            Edit Folder Name
+                        </Button>
+                    </DialogComponent>
+
+                    {/* New Note Dialog */}
                     <DialogComponent
                         dismissible={true}
                         open={newNoteState.dialogOpen}
@@ -420,7 +450,7 @@ const NotesBrowsePage = () => {
 
                         <p>Give the note some default content</p>
                         <textarea
-                            placeholder="Note content"
+                            placeholder="Note content (optional)"
                             className="border-2-dark mt-2 h-32 w-full rounded-md border-2 bg-gray-200 p-2 outline-none transition-all focus:border-blue-400 dark:border-slate-800 dark:bg-slate-800"
                             onChange={e => setNewNoteState({ ...newNoteState, content: e.target.value })}
                         />
@@ -466,6 +496,32 @@ const NotesBrowsePage = () => {
                                 Delete
                             </Button>
                         </div>
+                    </DialogComponent>
+
+                    {/* Edit Note Name Dialog */}
+                    <DialogComponent
+                        dismissible={true}
+                        open={editNoteNameState.dialogOpen}
+                        title="Edit Note Name"
+                        setOpen={() => {
+                            setEditNoteState({ ...editNoteNameState, dialogOpen: false })
+                        }}
+                    >
+                        <p>Give the note a new title</p>
+                        <InputComponent
+                            type="text"
+                            placeholder="Note title"
+                            className="mt-2 w-full"
+                            onChange={e => setEditNoteState({ ...editNoteNameState, content: e.target.value })}
+                        />
+
+                        <Button
+                            onClick={() => editNoteName(editNoteNameState.content, editNoteNameState.content)}
+                            variant="primary"
+                            className="mt-2 w-full"
+                        >
+                            Edit Note Name
+                        </Button>
                     </DialogComponent>
 
                     {/* Browser  */}
@@ -531,6 +587,12 @@ const NotesBrowsePage = () => {
                                                                 <div className="flex h-4 items-center justify-center gap-2 md:hidden md:group-hover:flex">
                                                                     <FontAwesomeIcon
                                                                         icon={faPencil}
+                                                                        onClick={() => {
+                                                                            setEditFolderNameState({
+                                                                                dialogOpen: true,
+                                                                                name: folder.name
+                                                                            })
+                                                                        }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                     <FontAwesomeIcon
@@ -549,16 +611,23 @@ const NotesBrowsePage = () => {
                                                         <ContextMenu.Portal>
                                                             <ContextMenu.Content className="flex gap-2 rounded-md bg-gray-200 p-2 dark:bg-slate-700">
                                                                 <Button
-                                                                    onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${folder.id}`)
-                                                                    }
+                                                                    onClick={() => {
+                                                                        var win = window.open(
+                                                                            `/panel/notes/browse/${folder.id}`,
+                                                                            '_blank'
+                                                                        )
+                                                                        win!.focus()
+                                                                    }}
                                                                     variant="secondary"
                                                                 >
                                                                     Open in new tab
                                                                 </Button>
                                                                 <Button
                                                                     onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${folder.id}`)
+                                                                        setEditFolderNameState({
+                                                                            dialogOpen: true,
+                                                                            name: folder.name
+                                                                        })
                                                                     }
                                                                     variant="secondary"
                                                                 >
@@ -644,6 +713,12 @@ const NotesBrowsePage = () => {
                                                                     />
                                                                     <FontAwesomeIcon
                                                                         icon={faTerminal}
+                                                                        onClick={() => {
+                                                                            setEditNoteState({
+                                                                                dialogOpen: true,
+                                                                                content: note.title
+                                                                            })
+                                                                        }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                     <FontAwesomeIcon
@@ -662,16 +737,23 @@ const NotesBrowsePage = () => {
                                                         <ContextMenu.Portal>
                                                             <ContextMenu.Content className="flex gap-2 rounded-md bg-gray-200 p-2 dark:bg-slate-700">
                                                                 <Button
-                                                                    onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${note.id}`)
-                                                                    }
+                                                                    onClick={() => {
+                                                                        var win = window.open(
+                                                                            `/panel/notes/view/${note.id}`,
+                                                                            '_blank'
+                                                                        )
+                                                                        win!.focus()
+                                                                    }}
                                                                     variant="secondary"
                                                                 >
                                                                     Open in new tab
                                                                 </Button>
                                                                 <Button
                                                                     onClick={() =>
-                                                                        router.push(`/panel/notes/browse/${note.id}`)
+                                                                        setEditNoteState({
+                                                                            dialogOpen: true,
+                                                                            content: note.title
+                                                                        })
                                                                     }
                                                                     variant="secondary"
                                                                 >
