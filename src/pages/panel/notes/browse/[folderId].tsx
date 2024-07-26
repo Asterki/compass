@@ -133,7 +133,7 @@ const NotesBrowsePage = () => {
                 const responseBody = await response.json()
                 console.log('Folder created:', responseBody)
                 updateFoldersAndNotes()
-            } 
+            }
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
             if (error instanceof ZodError) {
@@ -174,7 +174,7 @@ const NotesBrowsePage = () => {
                     parentFolderId: params.folderId || `${(session as any).id}-rootfd`
                 })
             })
-    
+
             if (response.ok) {
                 const responseBody = await response.json()
                 console.log('Note created:', responseBody)
@@ -314,13 +314,13 @@ const NotesBrowsePage = () => {
                                                 <div key={`${folder.name}-${folder.name}`}>
                                                     <ContextMenu.Root>
                                                         <ContextMenu.Trigger>
-                                                            <Collapsible.Trigger
-                                                                className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
-                                                                onClick={() =>
-                                                                    router.push(`/panel/notes/browse/${folder.id}`)
-                                                                }
-                                                            >
-                                                                <div className="flex-items-center justify-center">
+                                                            <div className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700">
+                                                                <div
+                                                                    className="flex items-center w-full justify-start"
+                                                                    onClick={() =>
+                                                                        router.push(`/panel/notes/browse/${folder.id}`)
+                                                                    }
+                                                                >
                                                                     <FontAwesomeIcon
                                                                         icon={faFolder}
                                                                         className="mr-2 fill-white"
@@ -338,7 +338,7 @@ const NotesBrowsePage = () => {
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 transition-all hover:bg-gray-400/20 hover:text-red-500 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                 </div>
-                                                            </Collapsible.Trigger>
+                                                            </div>
                                                         </ContextMenu.Trigger>
                                                         <ContextMenu.Portal>
                                                             <ContextMenu.Content className="flex gap-2 rounded-md bg-gray-200 p-2 dark:bg-slate-700">
@@ -406,13 +406,13 @@ const NotesBrowsePage = () => {
                                                 <div key={`${note.id}-${note.title}`}>
                                                     <ContextMenu.Root>
                                                         <ContextMenu.Trigger>
-                                                            <Collapsible.Trigger
-                                                                className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700"
-                                                                onClick={() =>
-                                                                    router.push(`/panel/notes/view/${note.id}`)
-                                                                }
-                                                            >
-                                                                <div className="flex-items-center justify-center">
+                                                            <div className="group mt-2 flex w-full cursor-pointer items-center justify-between rounded-md p-2 transition-all hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700">
+                                                                <div
+                                                                    className="flex items-center w-full justify-start"
+                                                                    onClick={() =>
+                                                                        router.push(`/panel/notes/view/${note.id}`)
+                                                                    }
+                                                                >
                                                                     <FontAwesomeIcon
                                                                         icon={faStickyNote}
                                                                         className="mr-2 fill-white"
@@ -434,7 +434,7 @@ const NotesBrowsePage = () => {
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 transition-all hover:bg-gray-400/20 hover:text-red-500 dark:fill-slate-700 dark:hover:bg-white/20"
                                                                     />
                                                                 </div>
-                                                            </Collapsible.Trigger>
+                                                            </div>
                                                         </ContextMenu.Trigger>
                                                         <ContextMenu.Portal>
                                                             <ContextMenu.Content className="flex gap-2 rounded-md bg-gray-200 p-2 dark:bg-slate-700">
