@@ -38,12 +38,37 @@ const createFolder = async (data: { name: string; userId: string; parentFolderId
  * @returns True if the folder was deleted, false otherwise.
  */
 const deleteFolder = async (folderId: string): Promise<boolean> => {
-    const result = await prismaClient.folder.delete({
-        where: { id: folderId }
-    })
+     // Recursive function to delete all nested folders and their contents
+     const deleteNestedFolders = async (id: string): Promise<void> => {
+        // Fetch all nested folders
+        const nestedFolders = await prismaClient.folder.findMany({
+            where: { parent_folder_id: id }
+        });
 
-    if (result) return true
-    return false
+        // Recursively delete each nested folder
+        for (const folder of nestedFolders) {
+            await deleteNestedFolders(folder.id);
+        }
+
+        // Delete all contents of the current folder (e.g., files)
+        await prismaClient.note.deleteMany({
+            where: { parent_folder_id: id }
+        });
+
+        // Delete the current folder
+        await prismaClient.folder.delete({
+            where: { id: id }
+        });
+    };
+
+    try {
+        // Start the recursive deletion from the root folder
+        await deleteNestedFolders(folderId);
+        return true;
+    } catch (error) {
+        console.error('Failed to delete folder and its contents:', error);
+        return false;
+    }
 }
 
 /**

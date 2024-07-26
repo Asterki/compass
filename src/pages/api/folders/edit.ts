@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         .object({
             folderId: z.string({}).min(1).max(36),
             name: z.string({}).min(1).max(36),
-            newParentFolderId: z.string({}).min(1).max(36),
+            newParentFolderId: z.string({}).min(1).max(36)
         })
         .safeParse(req.body)
 
@@ -37,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
+        console.log(parsedBody)
         const userId = (session as any).id as string
 
         const folder = await getFolder(parsedBody.data.folderId)

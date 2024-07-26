@@ -79,6 +79,7 @@ const NotesBrowsePage = () => {
     // Folder-related states
     const [editFolderNameState, setEditFolderNameState] = React.useState({
         name: '',
+        folderId: '',
         dialogOpen: false
     })
     const [deleteFolderDialogState, setDeleteFolderDialogState] = React.useState({
@@ -94,7 +95,7 @@ const NotesBrowsePage = () => {
     const updateFoldersAndNotes = async () => {
         if (status == 'authenticated') {
             // Fetch the folder
-            const responseFolder = await fetch('/api/folder/get', {
+            const responseFolder = await fetch('/api/folders/get', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -144,7 +145,7 @@ const NotesBrowsePage = () => {
         try {
             const parsed = folderNameSchema.parse(name)
 
-            const response = await fetch('/api/folder/create', {
+            const response = await fetch('/api/folders/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -172,7 +173,7 @@ const NotesBrowsePage = () => {
     }
 
     const deleteFolder = async (folderId: string) => {
-        const response = await fetch('/api/folder/delete', {
+        const response = await fetch('/api/folders/delete', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -200,28 +201,32 @@ const NotesBrowsePage = () => {
         try {
             const parsed = folderNameSchema.parse(newName)
 
-            const response = await fetch('/api/folder/edit', {
+            const response = await fetch('/api/folders/edit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     folderId: folderId,
-                    newName: parsed
+                    name: parsed,
+                    newParentFolderId: params.folderId || `${(session as any).id}-rootfd`
                 })
             })
 
             if (response.ok) {
                 updateFoldersAndNotes()
                 showAlert(5, 'Folder name edited successfully', 'success')
+            } else {
+                console.error('Failed to edit folder name:', await response.json())
             }
         } catch (error: ZodError | any) {
             // Check if the error is a ZodError
-            setAlertState({
-                open: true,
-                variant: 'destructive',
-                text: error instanceof ZodError ? error.errors[0].message : 'Failed to create note, unknown error'
-            })
+            showAlert(
+                5,
+                error instanceof ZodError ? error.errors[0].message : 'Failed to edit folder name',
+                'destructive'
+            )
+            console.log(error)
         }
 
         setEditFolderNameState({ ...editFolderNameState, dialogOpen: false })
@@ -423,7 +428,7 @@ const NotesBrowsePage = () => {
                         />
 
                         <Button
-                            onClick={() => editFolderName(editFolderNameState.name, editFolderNameState.name)}
+                            onClick={() => editFolderName(editFolderNameState.folderId, editFolderNameState.name)}
                             variant="primary"
                             className="mt-2 w-full"
                         >
@@ -590,7 +595,8 @@ const NotesBrowsePage = () => {
                                                                         onClick={() => {
                                                                             setEditFolderNameState({
                                                                                 dialogOpen: true,
-                                                                                name: folder.name
+                                                                                name: folder.name,
+                                                                                folderId: folder.id
                                                                             })
                                                                         }}
                                                                         className="h-4 w-4 rounded-full fill-gray-200 p-2 hover:bg-gray-400/20 dark:fill-slate-700 dark:hover:bg-white/20"
@@ -626,7 +632,8 @@ const NotesBrowsePage = () => {
                                                                     onClick={() =>
                                                                         setEditFolderNameState({
                                                                             dialogOpen: true,
-                                                                            name: folder.name
+                                                                            name: folder.name,
+                                                                            folderId: folder.id
                                                                         })
                                                                     }
                                                                     variant="secondary"
