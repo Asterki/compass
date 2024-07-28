@@ -8,20 +8,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
     faBell,
     faBook,
-    faCalendar,
     faCalendarAlt,
     faClock,
     faEgg,
-    faFolder,
     faGraduationCap,
-    faHourglass2,
     faMoneyBill1Wave,
-    faNoteSticky,
-    faSchool,
     faShip,
     faStickyNote,
-    faTasks,
-    faTimesRectangle
+    faTasks
 } from '@fortawesome/free-solid-svg-icons'
 
 import { Inter } from 'next/font/google'
@@ -58,10 +52,10 @@ const MainPage = () => {
                 <main className="flex w-full flex-col items-center justify-between">
                     <NavbarComponent session={session} />
 
-                    <section className="flex flex-col flex-wrap md:items-stretch items-center justify-center gap-4 p-4 md:flex-row">
+                    <section className="flex flex-col flex-wrap items-center justify-center gap-4 p-4 md:flex-row md:items-stretch">
                         <Link
                             href={'/panel/notes/browse'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faStickyNote} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Notes</h1>
@@ -70,7 +64,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/calendar'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faCalendarAlt} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Calendar</h1>
@@ -79,7 +73,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/tasks'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faTasks} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Tasks</h1>
@@ -88,7 +82,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/recipes'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faEgg} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Recipes</h1>
@@ -97,7 +91,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/school'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faGraduationCap} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">School Dashboard</h1>
@@ -106,7 +100,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/reminders'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faBell} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Reminders</h1>
@@ -115,7 +109,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/pomodoro'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faClock} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Pomodoro</h1>
@@ -124,7 +118,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/goals'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faShip} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Goal Setting</h1>
@@ -133,7 +127,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/books'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faBook} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Book Manager</h1>
@@ -142,7 +136,7 @@ const MainPage = () => {
 
                         <Link
                             href={'/panel/expenses'}
-                            className="flex md:w-3/12 w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105"
+                            className="flex w-11/12 cursor-pointer select-none flex-col items-center justify-center rounded-md bg-white/10 p-4 text-center text-white transition-all hover:scale-105 md:w-3/12"
                         >
                             <FontAwesomeIcon icon={faMoneyBill1Wave} className="fill-white text-8xl" />
                             <h1 className="text-xl font-bold">Expense Record</h1>
@@ -151,10 +145,7 @@ const MainPage = () => {
                     </section>
 
                     <footer className="flex w-full items-center justify-center p-4">
-                        <Button
-                            onClick={() => router.push('/panel/settings')}
-                            variant='secondary'
-                        >
+                        <Button onClick={() => router.push('/panel/settings')} variant="secondary">
                             Manage Sections
                         </Button>
                     </footer>
