@@ -25,12 +25,18 @@ const PanelPomodoro = () => {
 
     const [timerRunning, setTimerRunning] = React.useState(false)
     const [time, setTime] = React.useState(23)
+    const [typeTimer, setTypeTimer] = React.useState<"pomodoro" | "break" | "longbreak">("pomodoro")
     
 
     React.useEffect(() => {
         if (timerRunning) {
             const interval = setInterval(() => {
                 setTime((time) => time - 1)
+                if (time == 0) {
+                    setTimerRunning(false)
+                    setTypeTimer(typeTimer == "pomodoro" ? "break" : "pomodoro")
+                    setTime(typeTimer == "pomodoro" ? 23 : 4)
+                }
             }, 1000)
 
             return () => clearInterval(interval)
