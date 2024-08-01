@@ -24,7 +24,7 @@ const PanelPomodoro = () => {
     })
 
     const [timerRunning, setTimerRunning] = React.useState(false)
-    const [time, setTime] = React.useState(23)
+    const [time, setTime] = React.useState(1500)
     const [typeTimer, setTypeTimer] = React.useState<"pomodoro" | "break" | "longbreak">("pomodoro")
     
 
@@ -35,7 +35,7 @@ const PanelPomodoro = () => {
                 if (time == 0) {
                     setTimerRunning(false)
                     setTypeTimer(typeTimer == "pomodoro" ? "break" : "pomodoro")
-                    setTime(typeTimer == "pomodoro" ? 23 : 4)
+                    setTime(typeTimer == "pomodoro" ? 1500 : 900)
                 }
             }, 1000)
 
@@ -59,6 +59,18 @@ const PanelPomodoro = () => {
 
                     <p className="text-2xl">Pomodoro Timer</p>
 
+                    <div className="flex gap-4">
+                        <Button onClick={() => setTime(1500)} variant={timerRunning ? "disabled" : "primary"}>
+                            Pomodoro
+                        </Button>
+                        <Button onClick={() => setTime(300)} variant={timerRunning ? "disabled" : "primary"}>
+                            Short Break
+                        </Button>
+                        <Button onClick={() => setTime(900)} variant={timerRunning ? "disabled" : "primary"}>
+                            Long Break
+                        </Button>
+                    </div>
+
                     <div className="flex flex-col items-center justify-center gap-4 p-4">
                         <p className="text-4xl">
                             {Math.floor(time / 60)}:{time % 60 < 10 ? '0' : ''}
@@ -68,6 +80,15 @@ const PanelPomodoro = () => {
                         <Button onClick={() => setTimerRunning(!timerRunning)} variant="success">
                             {timerRunning ? 'Stop' : 'Start'}
                         </Button>
+
+                        <Button onClick={() => setTime(1500)} variant="destructive">
+                            Reset
+                        </Button>
+
+                        <p className="text-xl">
+                            {typeTimer == "pomodoro" ? "Pomodoro" : typeTimer == "break" ? "Short Break" : "Long Break"}
+
+                        </p>
                     </div>
                 </main>
             )}
